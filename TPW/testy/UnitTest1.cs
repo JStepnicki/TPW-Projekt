@@ -1,5 +1,5 @@
 using TPW;
-using static TPW.calculator;
+
 namespace testy
 {
     [TestClass]
