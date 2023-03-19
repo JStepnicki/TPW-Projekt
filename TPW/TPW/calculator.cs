@@ -15,7 +15,7 @@ namespace TPW
 
         public double sub(double a, double b)
         {
-            return a + b;
+            return a - b;
         }
     }
 }
