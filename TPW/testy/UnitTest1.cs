@@ -11,5 +11,11 @@ namespace testy
             calculator test = new calculator();
             Assert.AreEqual(test.add(4,5),9);
         }
+
+        public void TestMethod2()
+        {
+            calculator test = new calculator();
+            Assert.AreEqual(test.sub(4, 5), -1);
+        }
     }
 }
