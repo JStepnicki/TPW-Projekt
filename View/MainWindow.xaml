@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <Border BorderBrush="Black" BorderThickness="5,5,5,5" HorizontalAlignment="Left" Height="420" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="650" RenderTransformOrigin="0.504,0.53" Background="#FFDDD2B4"/>
+        <TextBox HorizontalAlignment="Left" Height="18" Margin="700,173,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="70" RenderTransformOrigin="0.396,-0.824" TextAlignment="Center"/>
+        <Button Content="Start" Margin="700,217,30,0" VerticalAlignment="Top" RenderTransformOrigin="0.503,-0.818" Background="#FFAFD5D5"/>
     </Grid>
 </Window>
