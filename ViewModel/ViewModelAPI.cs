@@ -63,8 +63,8 @@ namespace ViewModel
 
         public ViewModelAPI(AbstractModelAPI modelAPI = null)
         {
-            EnableAction = new Akcja(Enable);
-            DisableAction = new Akcja(Disable);
+            EnableAction = new Action(Enable);
+            DisableAction = new Action(Disable);
             if (modelAPI == null)
             {
                 this.modelAPI = AbstractModelAPI.CreateAPI();

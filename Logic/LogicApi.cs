@@ -25,6 +25,7 @@ namespace Logic
             private AbstractDataApi dataApi;
             private Board board;
             private List<Task> tasks = new List<Task>();
+            private SemaphoreSlim semaphore = new SemaphoreSlim(1);
             public LogicAPI(AbstractDataApi abstractDataAPI = null)
             {
                 if (abstractDataAPI == null)
@@ -44,34 +45,36 @@ namespace Logic
             }
             public override void CreateBalls()
             {
+                
                 ThreadLocal<Random> random = new ThreadLocal<Random>(() => new Random());
 
-                foreach (Ball ball in board.Balls)
+                Parallel.ForEach(board.Balls, ball =>
                 {
-                    Task task = new Task(() =>
+                    Task task = new Task(async () =>
                     {
                         while (this.IsEnabled())
                         {
-                            lock (ball)
-                            {
+
+                                await semaphore.WaitAsync();
                                 ball.XMovement = random.Value.Next(-10, 10);
                                 ball.YMovement = random.Value.Next(-10, 10);
 
                                 if (0 > (ball.XCord + ball.XMovement - ball.Radius) || board.Width < (ball.XCord + ball.XMovement + ball.Radius))
                                 {
-                                    ball.XMovement = -ball.XMovement;
+                                    ball.XMovement = ball.XMovement * -1; 
                                 }
                                 if (0 > (ball.YCord + ball.YMovement - ball.Radius) || board.Height < (ball.YCord + ball.YMovement + ball.Radius))
                                 {
-                                    ball.YMovement = -ball.YMovement;
+                                    ball.YMovement = ball.YMovement * -1;
                                 }
                                 ball.MakeMove();
-                                Thread.Sleep(50);
-                            }
+                                Thread.Sleep(1);
+                                semaphore.Release();
+                            
                         }
                     });
                     tasks.Add(task);
-                }
+                }) ;
             }
 
             public override List<Ball> GetBallsList()
@@ -108,14 +111,9 @@ namespace Logic
                 board.IsRunning = true;
                 foreach (Task task in tasks)
                 {
-                    try
-                    {
+                 
                         task.Start();
-                    }
-                    catch
-                    {
-
-                    }
+               
                 }
             }
             public override bool IsEnabled()

@@ -12,8 +12,8 @@ namespace Model
 
         public Circle(Ball ball)
         {
-            this.x = ball.XCord - ball.Radius;
-            this.y = ball.YCord - ball.Radius;
+            this.x = ball.XCord;
+            this.y = ball.YCord;
             this.r = ball.Radius;
             ball.PropertyChanged += Update;
         }
