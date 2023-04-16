@@ -78,14 +78,14 @@ namespace ViewModel
         {
             modelAPI.CreateBoard(500, 666, ballsAmount, ballR);
             modelAPI.CreateBalls();
-            modelAPI.TurnOn();
+            modelAPI.Enable();
             isEnabled = true;
             Circles = modelAPI.GetCirclesList();
         }
 
         private void Disable()
         {
-            modelAPI.TurnOff();
+            modelAPI.Disable();
             isEnabled = false;
         }
 
