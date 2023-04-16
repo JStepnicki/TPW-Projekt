@@ -1,51 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Logic
 {
-    internal class Ball
+    public class Ball : INotifyPropertyChanged
     {
-        internal int Xpos { get; set; }
-        internal int Ypos { get; set; }
-        internal int Radius { get; set; }
-        internal int Mass { get; set; }
-        internal int SpeedX { get; set; }
-        internal int SpeedY { get; set; }
+        private int x;
+        private int y;
+        private int r;
+        private int xMovement;
+        private int yMovement;
 
-
-
-        public Ball(int X, int Y, int radius)
+        public Ball(int x, int y, int r)
         {
-            this.Xpos = X;
-            this.Ypos = Y;
-            this.Radius = radius;
-            this.Mass = 10;
+            this.x = x;
+            this.y = y;
+            this.r = r;
+            this.xMovement = 0;
+            this.yMovement = 0;
         }
 
-        public bool CheckColission(int BoardWidth, int BoardHeight)
+        public void MakeMove()
         {
-            if (this.Xpos + this.SpeedX + this.Radius < BoardWidth && this.Xpos + this.SpeedX - this.Radius > 0
-                && this.Ypos + this.SpeedY + this.Radius < BoardHeight && this.Ypos + this.SpeedY - this.Radius > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            X += xMovement;
+            Y += yMovement;
         }
 
-        internal void RandSpeed(int min, int max)
+        public int X
+        { get { return x; } set { x = value; OnPropertyChanged(); } }
+        public int Y
+        { get { return y; } set { y = value; OnPropertyChanged(); } }
+        public int R
+        { get { return r; } set { r = value; OnPropertyChanged(); } }
+        public int XMovement
+        { get { return xMovement; } set { xMovement = value; } }
+        public int YMovement
+        { get { return yMovement; } set { yMovement = value; } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            Random rnd = new Random();
-            this.SpeedY = rnd.Next(min, max);
-            this.SpeedX = rnd.Next(min, max);
-        }
-        public void MoveBall()
-        {
-            this.Xpos += SpeedX;
-            this.Ypos += SpeedY;
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

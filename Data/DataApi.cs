@@ -1,6 +1,7 @@
 using System;
 
-namespace Dane
+namespace Data
+
 {
     public abstract class AbstractDataApi
     {
