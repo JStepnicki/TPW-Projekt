@@ -39,11 +39,20 @@ namespace Model
         }
 
         public int X
-        { get { return x; } set { x = value; OnPropertyChanged(); } }
+        { 
+            get { return x; } 
+            set { x = value; OnPropertyChanged(); } 
+        }
         public int Y
-        { get { return y; } set { y = value; OnPropertyChanged(); } }
+        { 
+            get { return y; } 
+            set { y = value; OnPropertyChanged(); } 
+        }
         public int R
-        { get { return r; } set { r = value; OnPropertyChanged(); } }
+        { 
+            get { return r; } 
+            set { r = value; OnPropertyChanged(); } 
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
