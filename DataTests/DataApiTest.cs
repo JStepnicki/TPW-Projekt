@@ -1,7 +1,7 @@
 namespace DataTests
 {
     [TestClass]
-    public class UnitTest1
+    public class DataApiTest
     {
         [TestMethod]
         public void TestMethod1()
