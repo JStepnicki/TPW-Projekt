@@ -17,7 +17,7 @@ namespace Logic
             this.width = width;
         }
 
-        public void FillBoard(int ballsQuantity, int ballRadius)
+        public void FillBallList(int ballsQuantity, int ballRadius)
         {
             Random random = new Random();
             for (int i = 0; i < ballsQuantity; i++)
