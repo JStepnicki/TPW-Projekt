@@ -24,7 +24,7 @@ namespace LogicTests
             int ballRadius = 3;
 
 
-            board.FillBallList(expectedBallsCount, ballRadius);
+            board.FillBoard(expectedBallsCount, ballRadius);
             Assert.AreEqual(expectedBallsCount,board.Balls.Count);
             foreach (var ball in board.Balls)
             {

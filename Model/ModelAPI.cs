@@ -12,9 +12,10 @@ namespace Model
         public abstract void CreateBoard(int height, int width, int ballQuantity, int ballRadius);
         public abstract void CreateBalls();
         public abstract ObservableCollection<Circle> GetCirclesList();
-        public abstract void TurnOff();
-        public abstract void TurnOn();
-        public abstract bool IsRunning();
+        public abstract bool IsEnabled();
+        public abstract void Disable();
+        public abstract void Enable();
+        
 
         internal sealed class ModelAPI : AbstractModelAPI
         {
@@ -54,15 +55,15 @@ namespace Model
                 return circles;
             }
 
-            public override bool IsRunning()
+            public override bool IsEnabled()
             {
                 return logicAPI.IsEnabled();
             }
-            public override void TurnOff()
+            public override void Disable()
             {
                 logicAPI.Disable();
             }
-            public override void TurnOn()
+            public override void Enable()
             {
                 logicAPI.Enable();
             }
