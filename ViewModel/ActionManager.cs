@@ -7,16 +7,16 @@ using System.Windows.Input;
 
 namespace ViewModel
 {
-    public class ViewModelAPI : INotifyPropertyChanged
+    public class ActionManager : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private AbstractModelAPI modelAPI;
-        private int ballsAmount = 1;
-        private int ballR = 30;
+        private int BallQuantity = 1;
+        private int BallRadius = 30;
         private bool isEnabled = true;
         private ObservableCollection<Circle> circles;
 
-        public ViewModelAPI() : this(null) { }
+        public ActionManager() : this(null) { }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -25,16 +25,16 @@ namespace ViewModel
 
         public String Balls
         {
-            get { return Convert.ToString(ballsAmount); }
+            get { return Convert.ToString(BallQuantity); }
             set
             {
                 try
                 {
-                    ballsAmount = Convert.ToInt32(value);
+                    BallQuantity = Convert.ToInt32(value);
                 }
                 catch
                 {
-                    ballsAmount = 0;
+                    BallQuantity = 0;
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace ViewModel
             }
         }
 
-        public ViewModelAPI(AbstractModelAPI modelAPI = null)
+        public ActionManager(AbstractModelAPI modelAPI = null)
         {
             EnableAction = new Action(Enable);
             DisableAction = new Action(Disable);
@@ -76,7 +76,7 @@ namespace ViewModel
         }
         private void Enable()
         {
-            modelAPI.CreateBoard(500, 666, ballsAmount, ballR);
+            modelAPI.CreateBoard(500, 666, BallQuantity, BallRadius);
             modelAPI.CreateBalls();
             modelAPI.Enable();
             isEnabled = true;

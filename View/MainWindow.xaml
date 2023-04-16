@@ -10,7 +10,7 @@
 
     <Grid>
         <Grid.DataContext>
-            <vm:ViewModelAPI/>
+            <vm:ActionManager/>
         </Grid.DataContext>
         <TextBox HorizontalAlignment="Left" Margin="358,630,0,0" TextWrapping="Wrap" Text="{Binding Balls, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="108" Height="30" FontSize="18"/>
         <Button Content="Start" HorizontalAlignment="Left" Margin="608,630,0,0" VerticalAlignment="Top" Width="70" Height="30" Command="{Binding EnableAction}" IsEnabled="{Binding IsEnabled}" FontSize="18" />

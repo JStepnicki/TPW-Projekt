@@ -11,7 +11,7 @@ namespace Logic
     {
         public static AbstractLogicAPI CreateApi()
         {
-            return new BoardMangaer();
+            return new BoardManager();
         }
         public abstract void InitiateBoard(int height, int width, int ballQuantity, int ballRadius);
         public abstract void CreateBalls();

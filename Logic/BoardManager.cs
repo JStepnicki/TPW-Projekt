@@ -26,11 +26,12 @@ namespace Logic
             {
                 Task task = new Task(async () =>
                 {
+                    ball.XMovement = random.Value.Next(-7, 7);
+                    ball.YMovement = random.Value.Next(-7, 7);
                     while (this.IsEnabled())
                     {
                         await semaphore.WaitAsync();
-                        ball.XMovement = random.Value.Next(-7, 7);
-                        ball.YMovement = random.Value.Next(-7, 7);
+
                         if (0 > (ball.XCord + ball.XMovement - ball.Radius) || board.Width < (ball.XCord + ball.XMovement + ball.Radius))
                         {
                             ball.XMovement *= -1;
