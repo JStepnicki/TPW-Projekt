@@ -1,93 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Text;
+﻿using System.Collections.Generic;
+using System;
 
 namespace Logic
 {
-    public class Board : LogicAbstractAPI
+    public class Board
     {
-        public int BoardWidth { get; set; }
-        public int BoardHeight { get; set; }
-        public List<Task> Tasks { get; set; }
-        public List<Ball> Balls { get; set; }
+        private int height;
+        private int width;
+        private bool Enabled = false;
+        private List<Ball> balls = new List<Ball>();
 
-        public Board(int sizeX, int sizeY)
+
+        public Board(int height, int width)
         {
-            this.BoardWidth = sizeX;
-            this.BoardHeight = sizeY;
-            Tasks = new List<Task>();
+            this.height = height;
+            this.width = width;
         }
 
-
-        public override void CreateTasks(int quantity, int radius)
+        public void FillBallList(int ballsQuantity, int ballRadius)
         {
-            for (int i = 0; i < quantity; i++)
+            balls.Clear();
+            Random random = new Random();
+            for (int i = 0; i < ballsQuantity; i++)
             {
-                Tasks.Add(new Task(() =>
-                {
-                    Random random = new Random();
-                    int x = random.Next(radius, BoardWidth - radius);
-                    int y = random.Next(radius, BoardHeight - radius);
-                    Ball ball = new Ball(x, y, radius);
-                    Balls.Add(ball);
-                    
-                    while (true)
-                    {
-                        while (true)
-                        {
-                            ball.RandSpeed(-5, 5);
-                            if (ball.CheckColission(this.BoardWidth, this.BoardHeight))
-                            {
-                                ball.MoveBall();
-                                break;
-                            }
-                            else
-                            {
-                                ball.RandSpeed(-5, 5);
-                            }
-                        }
-                        Thread.Sleep(400);
-                    }
-                }));
-
+                int x = random.Next(ballRadius, this.width - ballRadius);
+                int y = random.Next(ballRadius, this.height - ballRadius);
+                balls.Add(new Ball(x, y, ballRadius));
             }
         }
 
 
-        public override void EnableMovement()
+        public int Height 
         {
-            foreach (Task task in Tasks)
-            {
-                task.Start();
-            }
+            get { return height; } 
         }
-        public override void ClearBoard()
-        {
-            foreach (Task task in Tasks)
-            {
-                task.Dispose();
-            }
+        public int Width
+        { get 
+            { return width; } 
         }
-
-        public override List<List<int>> GetBallsPosition()
-        {
-            {
-                List<List<int>> positions = new List<List<int>>();
-                foreach (Ball b in Balls)
-                {
-                    List<int> BallPosition = new List<int>
-                {
-                    b.Xpos,
-                    b.Ypos
-                };
-                    positions.Add(BallPosition);
-                }
-                return positions;
-            }
-
+        public List<Ball> Balls 
+        { 
+            get { return balls; } 
+        }
+        public bool IsRunning 
+        { 
+            get { return Enabled; } 
+            set { Enabled = value; } 
         }
     }
-
 }
