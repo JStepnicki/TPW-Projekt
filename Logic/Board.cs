@@ -6,13 +6,12 @@ using System.Text;
 
 namespace Logic
 {
-    internal class Board : LogicAbstractAPI
+    public class Board : LogicAbstractAPI
     {
-        internal int BoardWidth { get; set; }
-        internal int BoardHeight { get; set; }
-        internal List<Task> Tasks { get; set; }
-        internal List<Ball> Balls { get; set; }
-
+        public int BoardWidth { get; set; }
+        public int BoardHeight { get; set; }
+        public List<Task> Tasks { get; set; }
+        public List<Ball> Balls { get; set; }
 
         public Board(int sizeX, int sizeY)
         {

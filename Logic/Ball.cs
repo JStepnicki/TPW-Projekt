@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Logic
 {
-    internal class Ball
+    public class Ball
     {
-        internal int Xpos { get; set; }
-        internal int Ypos { get; set; }
-        internal int Radius { get; set; }
-        internal int Mass { get; set; }
-        internal int SpeedX { get; set; }
-        internal int SpeedY { get; set; }
+        public int Xpos { get; set; }
+        public int Ypos { get; set; }
+        public int Radius { get; set; }
+        public int Mass { get; set; }
+        public int SpeedX { get; set; }
+        public int SpeedY { get; set; }
 
 
 
