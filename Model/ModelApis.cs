@@ -38,7 +38,7 @@ namespace Model
 
             public override void CreateBoard(int height, int width, int ballQuantity, int ballRadius)
             {
-                logicAPI.CreateBoard(height, width, ballQuantity, ballRadius);
+                logicAPI.InitiateBoard(height, width, ballQuantity, ballRadius);
             }
             public override void CreateBalls()
             {
@@ -56,15 +56,15 @@ namespace Model
 
             public override bool IsRunning()
             {
-                return logicAPI.IsRunning();
+                return logicAPI.IsEnabled();
             }
             public override void TurnOff()
             {
-                logicAPI.TurnOff();
+                logicAPI.Disable();
             }
             public override void TurnOn()
             {
-                logicAPI.TurnOn();
+                logicAPI.Enable();
             }
         }
     }

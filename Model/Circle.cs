@@ -12,9 +12,9 @@ namespace Model
 
         public Circle(Ball ball)
         {
-            this.x = ball.X - ball.R;
-            this.y = ball.Y - ball.R;
-            this.r = ball.R;
+            this.x = ball.XCord - ball.Radius;
+            this.y = ball.YCord - ball.Radius;
+            this.r = ball.Radius;
             ball.PropertyChanged += Update;
         }
 
@@ -23,17 +23,17 @@ namespace Model
             Ball ball = (Ball)_object;
             if (args.PropertyName == "X")
             {
-                this.x = ball.X - ball.R;
+                this.x = ball.XCord - ball.Radius;
                 OnPropertyChanged(nameof(X));
             }
             if (args.PropertyName == "Y")
             {
-                this.y = ball.Y - ball.R;
+                this.y = ball.YCord - ball.Radius;
                 OnPropertyChanged(nameof(Y));
             }
             if (args.PropertyName == "R")
             {
-                this.r = ball.R;
+                this.r = ball.Radius;
                 OnPropertyChanged(nameof(R));
             }
         }

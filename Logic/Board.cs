@@ -7,7 +7,7 @@ namespace Logic
     {
         private int height;
         private int width;
-        private bool isRunning = false;
+        private bool Enabled = false;
         private List<Ball> balls = new List<Ball>();
 
 
@@ -17,22 +17,35 @@ namespace Logic
             this.width = width;
         }
 
-        public void CreateBallsList(int ballsAmount, int ballsSize)
+        public void FillBallList(int ballsQuantity, int ballRadius)
         {
             balls.Clear();
             Random random = new Random();
-            for (int i = 0; i < ballsAmount; i++)
+            for (int i = 0; i < ballsQuantity; i++)
             {
-                int x = random.Next(ballsSize, this.width - ballsSize);
-                int y = random.Next(ballsSize, this.height - ballsSize);
-                balls.Add(new Ball(x, y, ballsSize));
+                int x = random.Next(ballRadius, this.width - ballRadius);
+                int y = random.Next(ballRadius, this.height - ballRadius);
+                balls.Add(new Ball(x, y, ballRadius));
             }
         }
 
 
-        public int Height { get { return height; } }
-        public int Width { get { return width; } }
-        public List<Ball> Balls { get { return balls; } }
-        public bool IsRunning { get { return isRunning; } set { isRunning = value; } }
+        public int Height 
+        {
+            get { return height; } 
+        }
+        public int Width
+        { get 
+            { return width; } 
+        }
+        public List<Ball> Balls 
+        { 
+            get { return balls; } 
+        }
+        public bool IsRunning 
+        { 
+            get { return Enabled; } 
+            set { Enabled = value; } 
+        }
     }
 }

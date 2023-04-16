@@ -5,37 +5,52 @@ namespace Logic
 {
     public class Ball : INotifyPropertyChanged
     {
-        private int x;
-        private int y;
+        private int xCordinate;
+        private int yCordinate;
         private int r;
-        private int xMovement;
-        private int yMovement;
+        private int xMove;
+        private int yMove;
 
         public Ball(int x, int y, int r)
         {
-            this.x = x;
-            this.y = y;
+            this.xCordinate = x;
+            this.yCordinate = y;
             this.r = r;
-            this.xMovement = 0;
-            this.yMovement = 0;
+            this.xMove = 0;
+            this.yMove = 0;
         }
 
         public void MakeMove()
         {
-            X += xMovement;
-            Y += yMovement;
+            XCord += xMove;
+            YCord += yMove;
         }
 
-        public int X
-        { get { return x; } set { x = value; OnPropertyChanged(); } }
-        public int Y
-        { get { return y; } set { y = value; OnPropertyChanged(); } }
-        public int R
-        { get { return r; } set { r = value; OnPropertyChanged(); } }
+        public int XCord
+        { 
+            get { return xCordinate; } 
+            set { xCordinate = value; OnPropertyChanged("X"); } // "X" to nazwa Eventu
+        }
+        public int YCord
+        { 
+            get { return yCordinate; } 
+            set { yCordinate = value; OnPropertyChanged("Y"); } 
+        }
+        public int Radius
+        { 
+            get { return r; } 
+            set { r = value; OnPropertyChanged("R"); } 
+        }
         public int XMovement
-        { get { return xMovement; } set { xMovement = value; } }
+        { 
+            get { return xMove; } 
+            set { xMove = value; } 
+        }
         public int YMovement
-        { get { return yMovement; } set { yMovement = value; } }
+        { 
+            get { return yMove; } 
+            set { yMove = value; } 
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")

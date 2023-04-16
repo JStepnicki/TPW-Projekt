@@ -19,7 +19,7 @@
         <ItemsControl Width="750" Height="600" ItemsSource="{Binding Circles}" Margin="125,28,125,72" >
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas Width="666" Height="500" Background="#45752e"/>
+                    <Canvas Width="666" Height="500" Background="#f00741"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>
@@ -30,7 +30,7 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Height="{Binding R}" Width="{Binding R}" Stroke="#c6841e" Fill="#c6841e"/>
+                    <Ellipse Height="{Binding R}" Width="{Binding R}" Stroke="#d6a020" Fill="#20d623"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

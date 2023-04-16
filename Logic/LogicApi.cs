@@ -13,12 +13,12 @@ namespace Logic
         {
             return new LogicAPI(abstractDataAPI);
         }
-        public abstract void CreateBoard(int height, int width, int ballQuantity, int ballRadius);
+        public abstract void InitiateBoard(int height, int width, int ballQuantity, int ballRadius);
         public abstract void CreateBalls();
         public abstract List<Ball> GetBallsList();
-        public abstract void TurnOff();
-        public abstract void TurnOn();
-        public abstract bool IsRunning();
+        public abstract bool IsEnabled();
+        public abstract void Disable();
+        public abstract void Enable();
 
         internal sealed class LogicAPI : AbstractLogicAPI
         {
@@ -37,10 +37,10 @@ namespace Logic
                 }
             }
 
-            public override void CreateBoard(int height, int width, int ballsQuantity, int ballRadius)
+            public override void InitiateBoard(int height, int width, int ballsQuantity, int ballRadius)
             {
                 board = new Board(height, width);
-                board.CreateBallsList(ballsQuantity, ballRadius);
+                board.FillBallList(ballsQuantity, ballRadius);
             }
             public override void CreateBalls()
             {
@@ -50,26 +50,23 @@ namespace Logic
                 {
                     Task task = new Task(() =>
                     {
-                        while (this.IsRunning())
+                        while (this.IsEnabled())
                         {
                             lock (ball)
                             {
-                                ball.XMovement = random.Value.Next(-10000, 10000) % 5;
-                                ball.YMovement = random.Value.Next(-10000, 10000) % 5;
+                                ball.XMovement = random.Value.Next(-10, 10);
+                                ball.YMovement = random.Value.Next(-10, 10);
 
-                                if (0 > (ball.X + ball.XMovement - ball.R) ||
-                                    board.Width < (ball.X + ball.XMovement + ball.R))
+                                if (0 > (ball.XCord + ball.XMovement - ball.Radius) || board.Width < (ball.XCord + ball.XMovement + ball.Radius))
                                 {
                                     ball.XMovement = -ball.XMovement;
                                 }
-                                if (0 > (ball.Y + ball.YMovement - ball.R) ||
-                                    board.Height < (ball.Y + ball.YMovement + ball.R))
+                                if (0 > (ball.YCord + ball.YMovement - ball.Radius) || board.Height < (ball.YCord + ball.YMovement + ball.Radius))
                                 {
                                     ball.YMovement = -ball.YMovement;
                                 }
-
                                 ball.MakeMove();
-                                Thread.Sleep(10);
+                                Thread.Sleep(50);
                             }
                         }
                     });
@@ -81,7 +78,7 @@ namespace Logic
             {
                 return board.Balls;
             }
-            public override void TurnOff()
+            public override void Disable()
             {
                 board.IsRunning = false;
                 bool isAllTasksCompleted = false;
@@ -106,7 +103,7 @@ namespace Logic
                 tasks.Clear();
                 board.Balls.Clear();
             }
-            public override void TurnOn()
+            public override void Enable()
             {
                 board.IsRunning = true;
                 foreach (Task task in tasks)
@@ -121,7 +118,7 @@ namespace Logic
                     }
                 }
             }
-            public override bool IsRunning()
+            public override bool IsEnabled()
             {
                 return board.IsRunning;
             }
