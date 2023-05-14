@@ -1,80 +1,159 @@
-﻿using Logic;
+﻿using Data;
+using Logic;
+using System.Numerics;
+using System.Reflection.Emit;
+using System.Xml.Schema;
 
-namespace LogicTests
+namespace LogicApiTest
 {
     [TestClass]
-    public class LogicAPITests
+    public class LogicApiTest
     {
-        [TestMethod]
-        public void TestInitiateBoard()
+        [TestClass]
+        internal class FakeDataBall : BallApi
         {
-            int height = 100;
-            int width = 200;
-            int ballQuantity = 10;
-            int ballRadius = 5;
+            private Vector2 _position { get; set; }
+            private Vector2 _speed { get; set; }
+            public override Boolean isRunning { get; set; }
 
-            AbstractLogicAPI api = AbstractLogicAPI.CreateApi();
-            api.InitiateBoard(height, width, ballQuantity, ballRadius);
-
-            List<Ball> balls = api.GetBallsList();
-            foreach (Ball ball in balls)
+            public override event EventHandler<DataEventArgs>? ChangedPosition;
+            public override int Mass { get; set; }
+            public override int Radius { get; set; }
+            public override bool CollisionCheck { get; set; }
+            public FakeDataBall(float X, float Y, int radius, int mass, int xSpeed, int ySpeed)
             {
-                Assert.IsTrue(ball.XCord >= ball.Radius && ball.XCord <= width - ball.Radius);
-                Assert.IsTrue(ball.YCord >= ball.Radius && ball.YCord <= height - ball.Radius);
+                _position = new Vector2(X, Y);
+                _speed = new Vector2(xSpeed, ySpeed);
+                Mass = mass;
+                Radius = radius;
+                Task.Run(StartMovement);
+                CollisionCheck = false;
+                isRunning = true;
             }
-            Assert.AreEqual(ballQuantity, balls.Count);
-            Assert.AreEqual(ballRadius, balls[0].Radius);
-        }
 
-        [TestMethod]
-        public void TestCreateBalls()
-        {
-            AbstractLogicAPI api = AbstractLogicAPI.CreateApi();
-            api.InitiateBoard(100, 200, 10, 5);
-            api.CreateBalls();
-            api.Enable();
-
-            var ballsList = api.GetBallsList();
-            Assert.AreEqual(10, ballsList.Count);
-
-            api.Disable();
-            ballsList = api.GetBallsList();
-
-            Assert.AreEqual(0, ballsList.Count);
-            foreach (var ball in ballsList)
+            public async void StartMovement()
             {
-                Assert.IsTrue(ball.XCord != 0 || ball.YCord != 0);
+                while (this.isRunning)
+                {
+                    lock (this)
+                    {
+                        Move();
+                    }
+                    CollisionCheck = false;
+                    await Task.Delay(10);
+                }
+            }
+
+            public override void Move()
+            {
+                Vector2 movedPos = new Vector2(Position.X + Speed.X, Position.Y + Speed.Y);
+                Position = movedPos;
+                DataEventArgs args = new DataEventArgs(this);
+                ChangedPosition?.Invoke(this, args);
+            }
+
+
+            public override Vector2 Position
+            {
+                get => _position;
+                set
+                {
+                    if (_position != value)
+                    {
+                        _position = value;
+                    }
+                }
+            }
+
+
+
+            public override Vector2 Speed
+            {
+                get => _speed;
+
+                set
+                {
+                    if (_speed != value)
+                    {
+                        _speed = value;
+                    }
+                }
             }
         }
+        [TestClass]
+        internal class FakeDataAPI : BoardApi
+        {
+            public override int Width { get; set; }
+            public override int Height { get; set; }
+
+            private List<BallApi> Balls = new List<BallApi>();
+
+            public FakeDataAPI(int width, int height)
+            {
+                Width = width;
+                Height = height;
+            }
+
+            public override BallApi AddBall(float X, float Y, int radius, int Mass, int xSpeed = 0, int ySpeed = 0)
+            {
+                BallApi ball = BallApi.CreateBall(X, Y, radius, Mass, xSpeed, ySpeed);
+                Balls.Add(ball);
+                return ball;
+            }
+
+            public override List<BallApi> GetAllBalls()
+            {
+                return Balls;
+            }
+            public override void RemoveAllBalls()
+            {
+                foreach (BallApi ball in Balls) { ball.isRunning = false; }
+                Balls.Clear();
+            }
+
+
+
+        }
+
+
 
         [TestMethod]
-        public void TestEnableDisable()
+        public void ConstructorTest()
         {
-            AbstractLogicAPI api = AbstractLogicAPI.CreateApi();
-            api.InitiateBoard(100, 200, 10, 5);
-
-            api.Enable();
-            Assert.IsTrue(api.IsEnabled());
-
-            api.Disable();
-            Assert.IsFalse(api.IsEnabled());
+            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
+            Assert.IsNotNull(board);
         }
 
         [TestMethod]
-        public void TestBallMovement()
+        public void AddingBallsTest()
         {
-            Ball ball = new Ball(50, 50, 10);
+            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
+            board.AddBalls(3, 5);
+            Assert.AreEqual(board.GetAllBalls().Count, 3);
+        }
+        [TestMethod]
+        public void ClearingBoardTest()
+        {
+            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
+            board.AddBalls(3, 5);
+            Assert.AreEqual(board.GetAllBalls().Count, 3);
 
-            int initialXCord = ball.XCord;
-            int initialYCord = ball.YCord;
-
-            ball.XMovement = 10;
-            ball.YMovement = -5;
-
-            ball.MakeMove();
-
-            Assert.AreEqual(initialXCord + ball.XMovement, ball.XCord);
-            Assert.AreEqual(initialYCord + ball.YMovement, ball.YCord);
+            board.ClearBoard();
+            Assert.AreEqual(board.GetAllBalls().Count, 0);
+        }
+        [TestMethod]
+        public void ClearingEmptyBoardTest()
+        {
+            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
+            board.ClearBoard();
+            Assert.AreEqual(board.GetAllBalls().Count, 0);
         }
     }
+
+
+
+
+
 }
+
+
