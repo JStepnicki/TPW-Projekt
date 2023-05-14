@@ -9,11 +9,18 @@ namespace Logic
 {
     public abstract class AbstractLogicAPI
     {
-        public static AbstractLogicAPI CreateApi()
+        public static AbstractLogicAPI CreateApi(AbstractDataAPI dataApi)
         {
-            return new BoardManager();
+            if (dataApi == null)
+            {
+                return new BoardManager(AbstractDataAPI.CreateApi());
+            }
+            else
+            {
+                return new BoardManager(dataApi);
+            }
         }
-        public abstract void InitiateBoard(int height, int width, int ballQuantity, int ballRadius);
+        public abstract void InitiateBoard(int height, int width, int ballQuantity, int ballRadius, int ballMass);
         public abstract void CreateBalls();
         public abstract List<Ball> GetBallsList();
         public abstract bool IsEnabled();

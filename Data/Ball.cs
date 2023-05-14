@@ -1,21 +1,23 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Logic
+namespace Data
 {
     public class Ball : INotifyPropertyChanged
     {
+        private int mass;
         private int xCordinate;
         private int yCordinate;
         private int r;
         private int xMove;
         private int yMove;
 
-        public Ball(int x, int y, int r)
+        public Ball(int x, int y, int r, int m)
         {
             this.xCordinate = x;
             this.yCordinate = y;
             this.r = r;
+            this.mass = m;
             this.xMove = 0;
             this.yMove = 0;
         }
@@ -40,6 +42,11 @@ namespace Logic
         { 
             get { return r; } 
             set { r = value; OnPropertyChanged("R"); } 
+        }
+        public int Mass
+        {
+            get { return mass; }
+            set { mass = value; }
         }
         public int XMovement
         { 

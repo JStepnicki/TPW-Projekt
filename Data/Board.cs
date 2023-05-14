@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace Logic
+namespace Data
 {
     public class Board
     {
@@ -17,14 +17,14 @@ namespace Logic
             this.width = width;
         }
 
-        public void FillBallList(int ballsQuantity, int ballRadius)
+        public void FillBallList(int ballsQuantity, int ballRadius, int ballMass)
         {
             Random random = new Random();
             for (int i = 0; i < ballsQuantity; i++)
             {
                 int x = random.Next(ballRadius, this.width - ballRadius);
                 int y = random.Next(ballRadius, this.height - ballRadius);
-                balls.Add(new Ball(x, y, ballRadius));
+                balls.Add(new Ball(x, y, ballRadius, ballMass));
             }
         }
 

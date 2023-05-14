@@ -9,14 +9,20 @@ namespace Logic
 {
     internal sealed class BoardManager : AbstractLogicAPI
     {
+        private readonly AbstractDataAPI dataApi;
         private Board board;
         private List<Task> tasks = new List<Task>();
         private SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
-        public override void InitiateBoard(int height, int width, int ballsQuantity, int ballRadius)
+        public BoardManager(AbstractDataAPI dataApi)
+        {
+            this.dataApi = dataApi;
+        }
+
+        public override void InitiateBoard(int height, int width, int ballsQuantity, int ballRadius, int ballMass)
         {
             board = new Board(height, width);
-            board.FillBallList(ballsQuantity, ballRadius);
+            board.FillBallList(ballsQuantity, ballRadius, ballMass);
         }
         public override void CreateBalls()
         {
