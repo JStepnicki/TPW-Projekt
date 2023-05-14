@@ -4,7 +4,15 @@ using System.Text;
 
 namespace Data
 {
-    internal class Class1
-    {
-    }
+
+    
+        public class DataEventArgs
+        {
+            public BallApi Ball;
+            public DataEventArgs(BallApi ball)
+            {
+                Ball = ball;
+            }
+        }
+    
 }

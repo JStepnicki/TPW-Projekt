@@ -1,61 +1,67 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Logic
+namespace Data
 {
-    public class Ball : INotifyPropertyChanged
+    internal class Ball : BallApi
     {
-        private int xCordinate;
-        private int yCordinate;
-        private int r;
-        private int xMove;
-        private int yMove;
+        private double _xCordinate;
+        private double _yCordinate;
 
-        public Ball(int x, int y, int r)
+        public override event EventHandler<DataEventArgs>? ChangedPosition;
+
+        public override double xCordinate
         {
-            this.xCordinate = x;
-            this.yCordinate = y;
-            this.r = r;
-            this.xMove = 0;
-            this.yMove = 0;
+            get => _xCordinate;
+            set { _xCordinate = value; }
         }
-
-        public void MakeMove()
+        public override double yCordinate
         {
-            XCord += xMove;
-            YCord += yMove;
+            get => _yCordinate;
+            set { _yCordinate = value; }
         }
-
-        public int XCord
-        { 
-            get { return xCordinate; } 
-            set { xCordinate = value; OnPropertyChanged("X"); } // "X" to nazwa Eventu
-        }
-        public int YCord
-        { 
-            get { return yCordinate; } 
-            set { yCordinate = value; OnPropertyChanged("Y"); } 
-        }
-        public int Radius
-        { 
-            get { return r; } 
-            set { r = value; OnPropertyChanged("R"); } 
-        }
-        public int XMovement
-        { 
-            get { return xMove; } 
-            set { xMove = value; } 
-        }
-        public int YMovement
-        { 
-            get { return yMove; } 
-            set { yMove = value; } 
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public override int Mass { get; set; }
+        public override double XSpeed { get; set; }
+        public override double YSpeed { get; set; }
+        public override int Radius { get; set; }
+        public override bool CollisionCheck { get; set; }
+        public Ball(int X, int Y, int radius, int mass, int xSpeed, int ySpeed)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            xCordinate = X;
+            yCordinate = Y;
+            Mass = mass;
+            XSpeed = xSpeed;
+            YSpeed = ySpeed;
+            Radius = radius;
+            Task.Run(StartMovement);
+            CollisionCheck = false;
         }
+
+        public async void StartMovement()
+        {
+            while (true)
+            {
+                lock (this)
+                {
+                    Move();
+                }
+                CollisionCheck = false;
+                await Task.Delay(10);
+            }
+        }
+
+        public override void Move()
+        {
+            xCordinate += XSpeed;
+            yCordinate += YSpeed;
+            DataEventArgs args = new DataEventArgs(this);
+            ChangedPosition?.Invoke(this, args);
+        }
+
+
     }
 }

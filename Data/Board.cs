@@ -1,50 +1,39 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
+using System.Threading;
 
-namespace Logic
+namespace Data
 {
-    public class Board
+    internal class Board : DataApi
     {
-        private int height;
-        private int width;
-        private bool Enabled = false;
-        private List<Ball> balls = new List<Ball>();
+        public override int Width { get; set; }
+        public override int Height { get; set; }
 
+        private List<BallApi> Balls = new List<BallApi>();
 
-        public Board(int height, int width)
+        public Board(int width, int height)
         {
-            this.height = height;
-            this.width = width;
+            Width = width;
+            Height = height;
         }
 
-        public void FillBallList(int ballsQuantity, int ballRadius)
+        public override BallApi AddBall(int X, int Y, int radius, int Mass, int xSpeed = 0, int ySpeed = 0)
         {
-            Random random = new Random();
-            for (int i = 0; i < ballsQuantity; i++)
-            {
-                int x = random.Next(ballRadius, this.width - ballRadius);
-                int y = random.Next(ballRadius, this.height - ballRadius);
-                balls.Add(new Ball(x, y, ballRadius));
-            }
+            BallApi ball = BallApi.CreateBall(X, Y, radius, Mass, xSpeed, ySpeed);
+            Balls.Add(ball);
+            return ball;
         }
 
-
-        public int Height 
+        public override List<BallApi> GetAllBalls()
         {
-            get { return height; } 
+            return Balls;
         }
-        public int Width
-        { get 
-            { return width; } 
+        public override void RemoveAllBalls()
+        {
+            Balls.Clear();
         }
-        public List<Ball> Balls 
-        { 
-            get { return balls; } 
-        }
-        public bool IsRunning 
-        { 
-            get { return Enabled; } 
-            set { Enabled = value; } 
-        }
+
     }
 }
