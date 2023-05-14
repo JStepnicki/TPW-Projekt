@@ -1,35 +1,25 @@
 ﻿using Data;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Logic
 {
     internal class LogicBall:LogicBallApi
     {
-        private double _PosX;
-        private double _PosY;
+        private Vector2 _position { get; set; }
 
 
 
         public override event EventHandler<LogicEventArgs>? ChangedPosition;
-        // To wykrywa (I suppose) wszystkie wywolania RaisePropertyChanged()
-        public override double PosX
-        {
-            get => _PosX;
-            set { _PosX = value; }
-        }
-        public override double PosY
-        {
-            get => _PosY;
-            set { _PosY = value; }
-        }
-       
 
-        internal LogicBall(double posX, double posY)
+
+
+
+        internal LogicBall(float xPosition, float yPosition)
         {
-            this.PosX = posX;
-            this.PosY = posY;
+            _position = new Vector2(xPosition, yPosition);
         }
 
 
@@ -37,13 +27,22 @@ namespace Logic
         public void UpdateBall(Object s, DataEventArgs e)
         {
             BallApi ball = (BallApi)s;
-            PosX = ball.xCordinate;
-            PosY = ball.yCordinate;
+            Position = ball.Position;
             LogicEventArgs args = new LogicEventArgs(this);
             ChangedPosition?.Invoke(this, args);
         }
-       
 
+        public override Vector2 Position
+        {
+            get => _position;
+            set
+            {
+                if (_position != value)
+                {
+                    _position = value;
+                }
+            }
+        }
 
     }
 

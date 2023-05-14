@@ -21,7 +21,7 @@ namespace Model
             Circles.Clear();
             foreach (LogicBallApi ball in _logicAPI.GetAllBalls())
             {
-                CircleApi c = CircleApi.CreateCircle((int)ball.PosX, (int)ball.PosY, _radius);
+                CircleApi c = CircleApi.CreateCircle((int)ball.Position.X, (int)ball.Position.Y, _radius);
                 Circles.Add(c);                                  //Ponizej dodajemy metode, ktora bedzie wywolywana za kazdym razem, gdy ball zglosi PropertyChanged
                 ball.ChangedPosition += c.UpdateCircle!;         //wykrzyknik nie jest konieczny, to tylko mowi kompilatorowi ze metoda UpdateCircle nie bedzie NULLem
             }

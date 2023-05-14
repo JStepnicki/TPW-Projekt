@@ -32,8 +32,8 @@ namespace Model
         public override void UpdateCircle(Object s, LogicEventArgs e)
         {
             LogicBallApi ball = (LogicBallApi)s;
-            x = (int)ball.PosX;
-            y = (int)ball.PosY;
+            x = (int)ball.Position.X;
+            y = (int)ball.Position.Y;
         }
 
         private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)

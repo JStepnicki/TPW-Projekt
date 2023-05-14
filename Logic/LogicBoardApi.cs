@@ -11,9 +11,8 @@ namespace Logic
     {
         public static LogicBoardApi CreateAPIInstance()
         {
-            return new LogicBoard(400, 580);
+            return new LogicBoard(400, 600);
         }
-
 
         public abstract void AddBalls(int number, int radius);
 
