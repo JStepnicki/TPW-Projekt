@@ -12,7 +12,7 @@ namespace Model
 
         public ModelAPI()
         {
-            _logicAPI = LogicBoardApi.CreateAPIInstance();
+            _logicAPI = LogicBoardApi.CreateAPI();
         }
 
 
