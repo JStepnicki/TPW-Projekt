@@ -3,48 +3,55 @@ using System;
 
 namespace Data
 {
-    public class Board
+    public abstract class BoardApi
     {
-        private int height;
-        private int width;
-        private bool Enabled = false;
-        private List<Ball> balls = new List<Ball>();
+        public abstract int height { get; }
+        public abstract int width { get; }
+        public abstract void FillBallList(int ballsQuantity, int ballRadius, int ballMass);
+        public abstract List<BallApi> GetBalls();
 
-
-        public Board(int height, int width)
+        public BoardApi CreateBoard(int height, int width)
         {
-            this.height = height;
-            this.width = width;
+            return new Board(height, width);
         }
 
-        public void FillBallList(int ballsQuantity, int ballRadius, int ballMass)
+        internal class Board : BoardApi
         {
-            Random random = new Random();
-            for (int i = 0; i < ballsQuantity; i++)
+            private readonly int _width;
+            private readonly int _height;
+            private readonly List<BallApi> _balls;
+
+            public Board(int height, int width)
             {
-                int x = random.Next(ballRadius, this.width - ballRadius);
-                int y = random.Next(ballRadius, this.height - ballRadius);
-                balls.Add(new Ball(x, y, ballRadius, ballMass));
+                _height = height;
+                _width = width;
             }
-        }
+
+            public override void FillBallList(int ballsQuantity, int ballRadius, int ballMass)
+            {
+                Random random = new Random();
+                for (int i = 0; i < ballsQuantity; i++)
+                {
+                    int x = random.Next(ballRadius, this.width - ballRadius);
+                    int y = random.Next(ballRadius, this.height - ballRadius);
+                    _balls.Add(new BallApi.Ball(x, y, ballRadius, ballMass));
+                }
+            }
 
 
-        public int Height 
-        {
-            get { return height; } 
-        }
-        public int Width
-        { get 
-            { return width; } 
-        }
-        public List<Ball> Balls 
-        { 
-            get { return balls; } 
-        }
-        public bool IsRunning 
-        { 
-            get { return Enabled; } 
-            set { Enabled = value; } 
+            public override int height
+            {
+                get { return _height; }
+            }
+            public override int width
+            {
+                get
+                { return _width; }
+            }
+            public override List<BallApi> GetBalls()
+            {
+                return _balls;
+            }
         }
     }
 }
