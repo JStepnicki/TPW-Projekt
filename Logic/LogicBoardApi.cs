@@ -9,9 +9,9 @@ namespace Logic
 {
     public abstract class LogicBoardApi
     {
-        public static LogicBoardApi CreateAPIInstance()
+        public static LogicBoardApi CreateAPIInstance(BoardApi dataApi = null)
         {
-            return new LogicBoard(400, 600);
+            return new LogicBoard(dataApi == null ? BoardApi.CreateApi(600,400) : dataApi);
         }
 
         public abstract void AddBalls(int number, int radius);

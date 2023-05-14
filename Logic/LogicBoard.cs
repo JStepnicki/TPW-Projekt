@@ -11,8 +11,8 @@ namespace Logic
 {
     internal sealed class LogicBoard : LogicBoardApi
     {
-        internal int Width { get; set; }
-        internal int Height { get; set; }
+        internal int SizeX { get; set; }
+        internal int SizeY { get; set; }
 
         private int _BallRadius { get; set; }
         public List<LogicBallApi> Balls { get; set; }
@@ -23,12 +23,12 @@ namespace Logic
 
 
 
-        public LogicBoard(int width, int height)
+        public LogicBoard(BoardApi api)
         {
-            this.Width = width;
-            this.Height = height;
+            this.SizeX = api.Height;
+            this.SizeY = api.Width;
             Balls = new List<LogicBallApi>();
-            dataAPI = BoardApi.CreateApi(Height, Width);
+            dataAPI = api;
         }
 
         public override void AddBalls(int number, int radius)
@@ -37,8 +37,8 @@ namespace Logic
             for (int i = 0; i < number; i++)
             {
                 Random random = new Random();
-                float x = random.Next(radius, Height - radius);
-                float y = random.Next(radius,  Width- radius);
+                float x = random.Next(radius, SizeY - radius);
+                float y = random.Next(radius,  SizeX- radius);
                 int weight = random.Next(3, 3);
 
                 int SpeedX;
