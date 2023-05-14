@@ -1,63 +1,67 @@
 ﻿using Logic;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Model
 {
-    public class Circle : INotifyPropertyChanged
+    /* 
+     * Circle podobnie jak Ball musi informowac warstwe wyzsza o zmianie jego atrybutow
+     * Dziala to dokladnie tak samo jak wlasnie w Ballu, wiec patrz tam.
+     * Roznica jest tylko taka, ze ViewModel korzysta z ObservableCollection<Circle>,
+     * ktora jakby nasluchuje zmian (czyli RaisePropertyChanged()) dla calej Kolekcji.
+     * I potem View nasluchuje zmian w tej kolekcji.
+     */
+    internal class Circle : CircleApi, INotifyPropertyChanged
     {
-        private int x;
-        private int y;
-        private int r;
+        public override int x { get => _x; set { _x = value; RaisePropertyChanged(); } }
+        public override int y { get => _y; set { _y = value; RaisePropertyChanged(); } }
 
-        public Circle(Ball ball)
+        public override int radius { get => _radius; set { _radius = value; RaisePropertyChanged(); } }
+
+        private int _x { get; set; }
+        private int _y { get; set; }
+        private int _radius { get; set; }
+
+        public Circle(int x, int y, int radius)
         {
-            this.x = ball.XCord;
-            this.y = ball.YCord;
-            this.r = ball.Radius;
-            ball.PropertyChanged += Update;
+            _x = x;
+            _y = y;
+            _radius = radius;
         }
 
-        private void Update(object _object, PropertyChangedEventArgs args)
+        public override event PropertyChangedEventHandler? PropertyChanged;
+
+        /* Jak juz wyzej pisalem, jest to dosyc problematyczna metoda.
+         * Jest to wywolywane gdy Ball sie zmieni (czyli w gruncie rzeczy zmieni sie jego X badz Y)
+         * 
+         * 
+         * Keep in mind:
+         *      Problem pojawia sie gdy:
+         *          - PosX nie ma okreslonego gettera 
+         *          - PosX nie ma okreslonego settera 
+         *      Badz po prostu nie ma do tych rzeczy dostepu.
+         *      IDE z jakiegos powodu nie wypluwa bledu w takiej sytuacji
+         *      i powoduje to crash procesu (odwolujemy sie do pamieci do ktorej nie mamy dostepu)
+         */
+        public override void UpdateCircle(Object s, LogicEventArgs e)
         {
-            Ball ball = (Ball)_object;
-            if (args.PropertyName == "X")
-            {
-                this.x = ball.XCord - ball.Radius;
-                OnPropertyChanged(nameof(X));
-            }
-            if (args.PropertyName == "Y")
-            {
-                this.y = ball.YCord - ball.Radius;
-                OnPropertyChanged(nameof(Y));
-            }
-            if (args.PropertyName == "R")
-            {
-                this.r = ball.Radius;
-                OnPropertyChanged(nameof(R));
-            }
+            IBall ball = (IBall)s;
+            x = (int)ball.PosX;
+            y = (int)ball.PosY;
         }
 
-        public int X
-        { 
-            get { return x; } 
-            set { x = value; OnPropertyChanged(); } 
-        }
-        public int Y
-        { 
-            get { return y; } 
-            set { y = value; OnPropertyChanged(); } 
-        }
-        public int R
-        { 
-            get { return r; } 
-            set { r = value; OnPropertyChanged(); } 
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
+
     }
+
+
+
 }

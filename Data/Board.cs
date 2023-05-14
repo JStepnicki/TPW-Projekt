@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Data
 {
-    internal class Board : DataApi
+    internal class Board : BoardApi
     {
         public override int Width { get; set; }
         public override int Height { get; set; }

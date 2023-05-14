@@ -4,9 +4,7 @@ using System.Text;
 
 namespace Data
 {
-
-    
-        public class DataEventArgs
+    public class DataEventArgs
         {
             public BallApi Ball;
             public DataEventArgs(BallApi ball)
