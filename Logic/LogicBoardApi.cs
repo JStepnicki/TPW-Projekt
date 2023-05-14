@@ -7,11 +7,11 @@ using System;
 
 namespace Logic
 {
-    public abstract class LogicAbstractAPI
+    public abstract class LogicBoardApi
     {
-        public static LogicAbstractAPI CreateAPIInstance()
+        public static LogicBoardApi CreateAPIInstance()
         {
-            return new LogicApi(400, 580);
+            return new LogicBoard(400, 580);
         }
 
 

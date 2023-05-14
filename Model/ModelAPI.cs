@@ -6,20 +6,20 @@ namespace Model
 {
     internal class ModelAPI : ModelAbstractAPI
     {
-        private LogicAbstractAPI _logicAPI;
+        private LogicBoardApi _logicAPI;
         private ObservableCollection<CircleApi> Circles = new ObservableCollection<CircleApi>();
         private int _radius;
 
         public ModelAPI()
         {
-            _logicAPI = LogicAbstractAPI.CreateAPIInstance();
+            _logicAPI = LogicBoardApi.CreateAPIInstance();
         }
 
 
         public override ObservableCollection<CircleApi> GetCircles()
         {
             Circles.Clear();
-            foreach (IBall ball in _logicAPI.GetAllBalls())
+            foreach (LogicBallApi ball in _logicAPI.GetAllBalls())
             {
                 CircleApi c = CircleApi.CreateCircle((int)ball.PosX, (int)ball.PosY, _radius);
                 Circles.Add(c);                                  //Ponizej dodajemy metode, ktora bedzie wywolywana za kazdym razem, gdy ball zglosi PropertyChanged
