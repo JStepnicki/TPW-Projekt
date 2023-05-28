@@ -19,6 +19,8 @@ namespace Logic
 
         private Object _locker = new Object();
 
+        private Random random = new Random();
+
         public BoardApi dataAPI;
 
 
@@ -36,7 +38,6 @@ namespace Logic
             _BallRadius = radius;
             for (int i = 0; i < number; i++)
             {
-                Random random = new Random();
                 float x = random.Next(radius, SizeY - radius);
                 float y = random.Next(radius,  SizeX- radius);
                 int weight = random.Next(3, 3);
