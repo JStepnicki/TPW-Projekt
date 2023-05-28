@@ -8,11 +8,12 @@ namespace Data
 {
     public abstract class BallApi
     {
-        public abstract Vector2 Position { get;}
+        public abstract Vector2 Position {get;}
         public abstract Vector2 Speed { get; set; }
         public abstract float Mass { get; set; }
         public abstract int Radius { get; set; }
         public abstract bool CollisionCheck { get; set; }
+        public abstract object getCommonLock();
         public abstract bool isRunning { get; set; }
 
         public abstract event EventHandler<DataEventArgs> ChangedPosition;

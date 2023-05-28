@@ -20,7 +20,10 @@ namespace Data
         public override float Mass { get; set; }
         public override int Radius { get; set; }
         public override bool CollisionCheck { get; set; }
+
         private static object lockObject = new object();
+
+
 
         internal Ball(float X, float Y, int radius, float mass, float xSpeed, float ySpeed)
         {
@@ -43,6 +46,7 @@ namespace Data
                 await Task.Delay(10);
             }
         }
+
 
         private  void Move()
         {
@@ -84,6 +88,11 @@ namespace Data
                     _speed = value;
                 }
             }
+        }
+
+        public override object getCommonLock()
+        {
+            return Ball.lockObject;
         }
     }
 

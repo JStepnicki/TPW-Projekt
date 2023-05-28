@@ -10,11 +10,7 @@ namespace Logic
     {
         private Vector2 _position { get; set; }
 
-
-
         public override event EventHandler<LogicEventArgs>? ChangedPosition;
-
-
 
 
         internal LogicBall(float xPosition, float yPosition)
