@@ -37,19 +37,14 @@ namespace LogicApiTest
                 {
                     lock (this)
                     {
-                        Move();
+                        Vector2 movedPos = new Vector2(Position.X + Speed.X, Position.Y + Speed.Y);
+                        Position = movedPos;
+                        DataEventArgs args = new DataEventArgs(this);
+                        ChangedPosition?.Invoke(this, args);
                     }
                     CollisionCheck = false;
                     await Task.Delay(10);
                 }
-            }
-
-            public override void Move()
-            {
-                Vector2 movedPos = new Vector2(Position.X + Speed.X, Position.Y + Speed.Y);
-                Position = movedPos;
-                DataEventArgs args = new DataEventArgs(this);
-                ChangedPosition?.Invoke(this, args);
             }
 
 
