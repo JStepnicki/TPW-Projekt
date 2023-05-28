@@ -12,6 +12,8 @@ namespace Data
 {
     internal class Ball : BallApi
     {
+        private object lockSpeed = new object();
+        private object lockPosition = new object();
         private Vector2 _position { get; set; }
         private Vector2 _speed { get; set; }
         public override Boolean isRunning { get; set; }
@@ -69,23 +71,26 @@ namespace Data
         }
 
 
+        }
 
         public override Vector2 Position
         {
-            get => _position;
-        }
-
-
-
-        public override Vector2 Speed
-        {
-            get => _speed;
+            get
+            {
+                lock (lockPosition)
+                {
+                    return _position;
+                }
+            }
 
             set
             {
-                if (_speed != value)
+                lock (lockPosition)
                 {
-                    _speed = value;
+                    if (_position != value)
+                    {
+                        _position = value;
+                    }
                 }
             }
         }
