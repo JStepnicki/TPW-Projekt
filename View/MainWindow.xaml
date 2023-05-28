@@ -32,7 +32,7 @@
         <TextBox
             FontSize="20"
             HorizontalAlignment="Left"
-            Margin="382,453,0,0"
+            Margin="408,494,0,0"
             Text="{Binding BallsAmount}"
             TextWrapping="Wrap"
             VerticalAlignment="Top"
@@ -42,7 +42,7 @@
             FontSize="20"
             Height="35"
             HorizontalAlignment="Left"
-            Margin="206,447,0,0"
+            Margin="252,487,0,0"
             VerticalAlignment="Top"
             Width="148" />
         <Button
@@ -65,10 +65,8 @@
             </Button.RenderTransform>
         </Button>
         <ItemsControl
-            Height="400"
-            Width="600"
             ItemsSource="{Binding Circles}"
-            Margin="82,-58,122,42">
+            Margin="100,42,84,121">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Background="#00BFFF" />
