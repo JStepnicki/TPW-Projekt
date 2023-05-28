@@ -17,10 +17,15 @@ namespace LogicApiTest
             public override Boolean isRunning { get; set; }
 
             public override event EventHandler<DataEventArgs>? ChangedPosition;
-            public override int Mass { get; set; }
+            public override float Mass { get; set; }
             public override int Radius { get; set; }
             public override bool CollisionCheck { get; set; }
-            public FakeDataBall(float X, float Y, int radius, int mass, int xSpeed, int ySpeed)
+
+            private static object lockObject = new object();
+
+
+
+            internal FakeDataBall(float X, float Y, int radius, float mass, float xSpeed, float ySpeed)
             {
                 _position = new Vector2(X, Y);
                 _speed = new Vector2(xSpeed, ySpeed);
@@ -29,40 +34,45 @@ namespace LogicApiTest
                 Task.Run(StartMovement);
                 CollisionCheck = false;
                 isRunning = true;
+
             }
 
-            public async void StartMovement()
+            private async void StartMovement()
             {
                 while (this.isRunning)
                 {
-                    lock (this)
-                    {
-                        Move();
-                    }
+                    Move();
                     CollisionCheck = false;
                     await Task.Delay(10);
                 }
             }
 
-            public override void Move()
+
+            private void Move()
             {
-                Vector2 movedPos = new Vector2(Position.X + Speed.X, Position.Y + Speed.Y);
-                Position = movedPos;
-                DataEventArgs args = new DataEventArgs(this);
-                ChangedPosition?.Invoke(this, args);
+                Monitor.Enter(lockObject);
+                try
+                {
+                    _position += _speed;
+                    DataEventArgs args = new DataEventArgs(this);
+                    ChangedPosition?.Invoke(this, args);
+                }
+                catch (SynchronizationLockException exception)
+                {
+                    throw new Exception("Synchronization lock not working", exception);
+                }
+                finally
+                {
+                    Monitor.Exit(lockObject);
+                }
+
             }
+
 
 
             public override Vector2 Position
             {
                 get => _position;
-                set
-                {
-                    if (_position != value)
-                    {
-                        _position = value;
-                    }
-                }
             }
 
 
@@ -79,7 +89,14 @@ namespace LogicApiTest
                     }
                 }
             }
+
+            public override object getCommonLock()
+            {
+                return FakeDataBall.lockObject;
+            }
         }
+
+
         [TestClass]
         internal class FakeDataAPI : BoardApi
         {
@@ -94,7 +111,7 @@ namespace LogicApiTest
                 Height = height;
             }
 
-            public override BallApi AddBall(float X, float Y, int radius, int Mass, int xSpeed = 0, int ySpeed = 0)
+            public override BallApi AddBall(float X, float Y, int radius, float Mass, float xSpeed = 0, float ySpeed = 0)
             {
                 BallApi ball = BallApi.CreateBall(X, Y, radius, Mass, xSpeed, ySpeed);
                 Balls.Add(ball);

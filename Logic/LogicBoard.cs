@@ -17,10 +17,6 @@ namespace Logic
         private int _BallRadius { get; set; }
         public List<LogicBallApi> Balls { get; set; }
 
-        private Object _locker = new Object();
-
-        private Random random = new Random();
-
         public BoardApi dataAPI;
 
 
@@ -42,13 +38,13 @@ namespace Logic
                 float y = random.Next(radius,  SizeX- radius);
                 int weight = random.Next(3, 3);
 
-                int SpeedX;
+                float SpeedX;
                 do
                 {
                     SpeedX = random.Next(-3, 3);
                 } while (SpeedX == 0);
 
-                int SpeedY;
+                float SpeedY;
                 do
                 {
                     SpeedY = random.Next(-3, 3);
@@ -87,7 +83,10 @@ namespace Logic
         {
             BallApi ball = (BallApi)s;
             List<BallApi> collidingBalls = new List<BallApi>();
-            foreach (BallApi otherBall in dataAPI.GetAllBalls().ToArray())
+            Monitor.Enter(ball.getCommonLock());
+            try
+            {
+                foreach (BallApi otherBall in dataAPI.GetAllBalls().ToArray())
             {
                 double distance = Math.Sqrt(Math.Pow(ball.Position.X + ball.Speed.X - (otherBall.Position.X + otherBall.Speed.X), 2)
                                 + Math.Pow(ball.Position.Y + ball.Speed.Y - (otherBall.Position.Y + otherBall.Speed.Y), 2));
@@ -97,8 +96,7 @@ namespace Logic
                 }
             }
 
-            lock (collidingBalls)
-            {
+
                 foreach (BallApi otherBall in collidingBalls)
                 {
                     float otherBallXSpeed = otherBall.Speed.X * (otherBall.Mass - ball.Mass) / (otherBall.Mass + ball.Mass)
@@ -115,6 +113,14 @@ namespace Logic
                     ball.Speed = new Vector2(ballXSpeed, ballYSpeed);
 
                 }
+            }
+            catch (SynchronizationLockException exception)
+            {
+                throw new Exception("Synchronization lock not working", exception);
+            }
+            finally
+            {
+                Monitor.Exit(ball.getCommonLock());
             }
 
         }
