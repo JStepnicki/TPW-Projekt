@@ -1,57 +1,40 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
+using System.Threading;
 
 namespace Data
 {
-    public abstract class BoardApi
+    internal class Board : BoardApi
     {
-        public abstract int height { get; }
-        public abstract int width { get; }
-        public abstract void FillBallList(int ballsQuantity, int ballRadius, int ballMass);
-        public abstract List<BallApi> GetBalls();
+        public override int Width { get; set; }
+        public override int Height { get; set; }
 
-        public BoardApi CreateBoard(int height, int width)
+        private List<BallApi> Balls = new List<BallApi>();
+
+        public Board(int width, int height)
         {
-            return new Board(height, width);
+            Width = width;
+            Height = height;
         }
 
-        internal class Board : BoardApi
+        public override BallApi AddBall(float X, float Y, int radius, int Mass, int xSpeed = 0, int ySpeed = 0)
         {
-            private readonly int _width;
-            private readonly int _height;
-            private readonly List<BallApi> _balls;
-
-            public Board(int height, int width)
-            {
-                _height = height;
-                _width = width;
-            }
-
-            public override void FillBallList(int ballsQuantity, int ballRadius, int ballMass)
-            {
-                Random random = new Random();
-                for (int i = 0; i < ballsQuantity; i++)
-                {
-                    int x = random.Next(ballRadius, this.width - ballRadius);
-                    int y = random.Next(ballRadius, this.height - ballRadius);
-                    _balls.Add(new BallApi.Ball(x, y, ballRadius, ballMass));
-                }
-            }
-
-
-            public override int height
-            {
-                get { return _height; }
-            }
-            public override int width
-            {
-                get
-                { return _width; }
-            }
-            public override List<BallApi> GetBalls()
-            {
-                return _balls;
-            }
+            BallApi ball = BallApi.CreateBall(X, Y, radius, Mass, xSpeed, ySpeed);
+            Balls.Add(ball);
+            return ball;
         }
+
+        public override List<BallApi> GetAllBalls()
+        {
+            return Balls;
+        }
+        public override void RemoveAllBalls()
+        {
+            foreach (BallApi ball in Balls) { ball.isRunning = false; }
+            Balls.Clear();
+        }
+
     }
 }
