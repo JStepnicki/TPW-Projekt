@@ -11,7 +11,7 @@
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
-    <Grid>
+    <Grid Height="600">
 
         <Label
             Content=" "
@@ -26,23 +26,24 @@
             FontSize="20"
             Height="42"
             HorizontalAlignment="Left"
-            Margin="145,487,0,0"
+            Margin="138,482,0,0"
             VerticalAlignment="Top"
             Width="74" />
         <TextBox
             FontSize="20"
             HorizontalAlignment="Left"
-            Margin="382,453,0,0"
+            Margin="400,490,0,0"
             Text="{Binding BallsAmount}"
             TextWrapping="Wrap"
             VerticalAlignment="Top"
             Width="120"  />
         <Label
-            Content="Wpisz liczbe kul"
+            Content="Wpisz liczbę kul"
             FontSize="20"
             Height="35"
             HorizontalAlignment="Left"
-            Margin="206,447,0,0"
+            Margin="240
+            ,486,0,0"
             VerticalAlignment="Top"
             Width="148" />
         <Button
@@ -52,7 +53,7 @@
             FontSize="20"
             Height="42"
             HorizontalAlignment="Left"
-            Margin="601,486,0,0"
+            Margin="562,482,0,0"
             VerticalAlignment="Top"
             Width="108" RenderTransformOrigin="-0.157,1.447" Click="Button_Click" >
             <Button.RenderTransform>
@@ -65,10 +66,8 @@
             </Button.RenderTransform>
         </Button>
         <ItemsControl
-            Height="400"
-            Width="600"
             ItemsSource="{Binding Circles}"
-            Margin="82,-58,122,42">
+            Margin="93.5,54,93.5,146" Width="600" Height="400">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Background="#00BFFF" />
