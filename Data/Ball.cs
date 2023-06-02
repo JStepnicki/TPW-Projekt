@@ -49,6 +49,10 @@ namespace Data
                 Move(time);
                 Vector2 tempSpeed = Speed;
                 int sleepTime = (int)(1 / Math.Abs(tempSpeed.X) + Math.Abs(tempSpeed.Y));
+                if(sleepTime < 10)
+                {
+                    sleepTime = 10;
+                }
                 await Task.Delay(sleepTime);
                 stopwatch.Stop();
             }
