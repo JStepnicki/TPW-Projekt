@@ -47,7 +47,9 @@ namespace Data
                 stopwatch.Restart();
                 stopwatch.Start();
                 Move(time);
-                await Task.Delay(10);
+                Vector2 tempSpeed = Speed;
+                int sleepTime = (int)(1 / Math.Abs(tempSpeed.X) + Math.Abs(tempSpeed.Y));
+                await Task.Delay(sleepTime);
                 stopwatch.Stop();
             }
         }
@@ -57,7 +59,7 @@ namespace Data
         {
             Vector2 tempPos = _position;
             Vector2 tempSpeed = Speed;
-            tempPos = new Vector2(tempPos.X + tempSpeed.X*time, tempPos.Y + tempSpeed.Y * time);
+            tempPos = new Vector2(tempPos.X + tempSpeed.X * time, tempPos.Y + tempSpeed.Y * time);
             _position = tempPos;
             DataEventArgs args = new DataEventArgs(this);
             ChangedPosition?.Invoke(this, args);
