@@ -13,7 +13,6 @@ namespace Data
         public abstract float Mass { get; set; }
         public abstract int Radius { get; set; }
         public abstract bool CollisionCheck { get; set; }
-        public abstract object getCommonLock();
         public abstract bool isRunning { get; set; }
 
         public abstract event EventHandler<DataEventArgs> ChangedPosition;

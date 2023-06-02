@@ -20,8 +20,9 @@ namespace Data
         public override float Mass { get; set; }
         public override int Radius { get; set; }
         public override bool CollisionCheck { get; set; }
+        Stopwatch stopwatch;
 
-        private static object lockObject = new object();
+
 
 
 
@@ -34,38 +35,32 @@ namespace Data
             Task.Run(StartMovement);
             CollisionCheck = false;
             isRunning = true;
+            stopwatch = new Stopwatch();
 
-    }
+        }
 
         private async void StartMovement()
         {
             while (this.isRunning)
             {
-                Move();
-                CollisionCheck = false;
+                float time = stopwatch.ElapsedMilliseconds/10;
+                stopwatch.Restart();
+                stopwatch.Start();
+                Move(time);
                 await Task.Delay(10);
+                stopwatch.Stop();
             }
         }
 
 
-        private  void Move()
+        private  void Move(float time)
         {
-            Monitor.Enter(lockObject);
-            try
-            {
-                _position += _speed;
-                DataEventArgs args = new DataEventArgs(this);
-                ChangedPosition?.Invoke(this, args);
-            }
-            catch (SynchronizationLockException exception)
-            {
-                throw new Exception("Synchronization lock not working", exception);
-            }
-            finally
-            {
-                Monitor.Exit(lockObject);
-            }
-
+            Vector2 tempPos = _position;
+            Vector2 tempSpeed = Speed;
+            tempPos = new Vector2(tempPos.X + tempSpeed.X*time, tempPos.Y + tempSpeed.Y * time);
+            _position = tempPos;
+            DataEventArgs args = new DataEventArgs(this);
+            ChangedPosition?.Invoke(this, args);
         }
 
 
@@ -90,10 +85,7 @@ namespace Data
             }
         }
 
-        public override object getCommonLock()
-        {
-            return Ball.lockObject;
-        }
+
     }
 
 }

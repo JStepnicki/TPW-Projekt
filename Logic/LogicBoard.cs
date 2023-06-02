@@ -15,6 +15,8 @@ namespace Logic
         internal int SizeY { get; set; }
 
         private int _BallRadius { get; set; }
+
+        private static object lockObject = new object();
         public List<LogicBallApi> Balls { get; set; }
 
         public BoardApi dataAPI;
@@ -84,7 +86,7 @@ namespace Logic
         {
             BallApi ball = (BallApi)s;
             List<BallApi> collidingBalls = new List<BallApi>();
-            Monitor.Enter(ball.getCommonLock());
+            Monitor.Enter(lockObject);
             try
             {
                 foreach (BallApi otherBall in dataAPI.GetAllBalls().ToArray())
@@ -121,7 +123,7 @@ namespace Logic
             }
             finally
             {
-                Monitor.Exit(ball.getCommonLock());
+                Monitor.Exit(lockObject);
             }
 
         }
