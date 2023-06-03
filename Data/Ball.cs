@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Data
@@ -21,10 +18,6 @@ namespace Data
         public override int Radius { get; set; }
         public override bool CollisionCheck { get; set; }
         Stopwatch stopwatch;
-
-
-
-
 
         internal Ball(float X, float Y, int radius, float mass, float xSpeed, float ySpeed)
         {
@@ -58,7 +51,6 @@ namespace Data
             }
         }
 
-
         private  void Move(float time)
         {
             Vector2 tempPos = _position;
@@ -69,14 +61,10 @@ namespace Data
             ChangedPosition?.Invoke(this, args);
         }
 
-
-
         public override Vector2 Position
         {
             get => _position;
         }
-
-
 
         public override Vector2 Speed
         {
@@ -90,7 +78,6 @@ namespace Data
                 }
             }
         }
-
 
     }
 

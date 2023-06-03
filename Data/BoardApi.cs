@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
+
 
 namespace Data
 {
     public abstract class BoardApi
     {
+        private Logger logger = new Logger();
         public abstract int Width { get; set; }
         public abstract int Height { get; set; }
 
@@ -16,6 +16,11 @@ namespace Data
         public static BoardApi CreateApi(int boardWidth, int boardHeight)
         {
             return new Board(boardWidth, boardHeight);
+        }
+
+        public void LogBallData(BallApi ball)
+        {
+            logger.LogBallPosition(ball);
         }
 
     }

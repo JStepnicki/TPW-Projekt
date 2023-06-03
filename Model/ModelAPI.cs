@@ -1,6 +1,5 @@
 ﻿using Logic;
 using System.Collections.ObjectModel;
-using System.Threading;
 
 namespace Model
 {
