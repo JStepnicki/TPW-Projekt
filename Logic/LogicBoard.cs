@@ -53,7 +53,7 @@ namespace Logic
                     SpeedY = random.Next(-3, 3);
                 } while (SpeedY == 0);
 
-                BallApi dataBall = dataAPI.AddBall(x, y, _BallRadius, weight, SpeedX, SpeedY);
+                BallApi dataBall = dataAPI.AddBall(i,x, y, _BallRadius, weight, SpeedX, SpeedY);
                 LogicBall ball = new LogicBall(dataBall.Position.X, dataBall.Position.Y);
 
 

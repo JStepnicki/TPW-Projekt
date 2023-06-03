@@ -21,7 +21,7 @@ namespace Data
         public BallLogger()
         {
             string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
-            _filePath = Path.Combine(path,"DataBallsLog.json");
+            _filePath = Path.Combine(path, "DataBallsLog.json");
             _ballsQueue = new ConcurrentQueue<JObject>();
 
             if (File.Exists(_filePath))
@@ -30,17 +30,20 @@ namespace Data
                 {
                     string input = File.ReadAllText(_filePath);
                     _logArray = JArray.Parse(input);
-                    return;
                 }
                 catch (JsonReaderException)
                 {
                     _logArray = new JArray();
                 }
             }
-            _logArray = new JArray();
-            FileStream file = File.Create(_filePath);
-            file.Close();
+            else
+            {
+                _logArray = new JArray();
+                FileStream file = File.Create(_filePath);
+                file.Close();
 
+            }
+            ClearLogFile();
         }
 
         public override void addBallToQueue(BallApi ball)
@@ -74,6 +77,20 @@ namespace Data
             try
             {
                 File.WriteAllText(_filePath, data);
+            }
+            finally
+            {
+                _writeMutex.ReleaseMutex();
+            }
+        }
+
+        internal void ClearLogFile()
+        {
+            _writeMutex.WaitOne();
+            try
+            {
+                _logArray.Clear();
+                File.WriteAllText(_filePath, string.Empty);
             }
             finally
             {

@@ -23,11 +23,14 @@ namespace Data
         Stopwatch stopwatch;
         private BallLoggerApi _logger;
 
+        public override int ID { get; }
 
 
 
-        internal Ball(float X, float Y, int radius, float mass, float xSpeed, float ySpeed, BallLoggerApi logger)
+
+        internal Ball(int id,float X, float Y, int radius, float mass, float xSpeed, float ySpeed, BallLoggerApi logger)
         {
+            ID = id;
             _position = new Vector2(X, Y);
             _speed = new Vector2(xSpeed, ySpeed);
             Mass = mass;

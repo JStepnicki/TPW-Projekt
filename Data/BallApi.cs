@@ -15,11 +15,14 @@ namespace Data
         public abstract bool CollisionCheck { get; set; }
         public abstract bool isRunning { get; set; }
 
+        public abstract int ID { get; }
+
+
         public abstract event EventHandler<DataEventArgs> ChangedPosition;
 
-        public static BallApi CreateBall(float X, float Y, int radius, float Mass, float xSpeed, float ySpeed, BallLoggerApi logger)
+        public static BallApi CreateBall(int id,float X, float Y, int radius, float Mass, float xSpeed, float ySpeed, BallLoggerApi logger)
         {
-            return new Ball(X, Y, radius, Mass, xSpeed, ySpeed,logger);
+            return new Ball(id,X, Y, radius, Mass, xSpeed, ySpeed,logger);
         }
     }
 }

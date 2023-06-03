@@ -19,9 +19,9 @@ namespace Data
             Height = height;
         }
 
-        public override BallApi AddBall(float X, float Y, int radius, float Mass, float xSpeed = 0, float ySpeed = 0)
+        public override BallApi AddBall(int id,float X, float Y, int radius, float Mass, float xSpeed = 0, float ySpeed = 0)
         {
-            BallApi ball = BallApi.CreateBall(X, Y, radius, Mass, xSpeed, ySpeed,_logger);
+            BallApi ball = BallApi.CreateBall(id,X, Y, radius, Mass, xSpeed, ySpeed,_logger);
             Balls.Add(ball);
             return ball;
         }
