@@ -21,12 +21,12 @@ namespace Data
         public override int Radius { get; set; }
         public override bool CollisionCheck { get; set; }
         Stopwatch stopwatch;
+        private BallLoggerApi _logger;
 
 
 
 
-
-        internal Ball(float X, float Y, int radius, float mass, float xSpeed, float ySpeed)
+        internal Ball(float X, float Y, int radius, float mass, float xSpeed, float ySpeed, BallLoggerApi logger)
         {
             _position = new Vector2(X, Y);
             _speed = new Vector2(xSpeed, ySpeed);
@@ -36,7 +36,7 @@ namespace Data
             CollisionCheck = false;
             isRunning = true;
             stopwatch = new Stopwatch();
-
+            this._logger = logger;
         }
 
         private async void StartMovement()
@@ -47,6 +47,7 @@ namespace Data
                 stopwatch.Restart();
                 stopwatch.Start();
                 Move(time);
+                _logger.addBallToQueue(this);
                 Vector2 tempSpeed = Speed;
                 int sleepTime = (int)(1 / Math.Abs(tempSpeed.X) + Math.Abs(tempSpeed.Y));
                 if(sleepTime < 10)

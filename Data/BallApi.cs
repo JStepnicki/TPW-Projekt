@@ -17,9 +17,9 @@ namespace Data
 
         public abstract event EventHandler<DataEventArgs> ChangedPosition;
 
-        public static BallApi CreateBall(float X, float Y, int radius, float Mass, float xSpeed, float ySpeed)
+        public static BallApi CreateBall(float X, float Y, int radius, float Mass, float xSpeed, float ySpeed, BallLoggerApi logger)
         {
-            return new Ball(X, Y, radius, Mass, xSpeed, ySpeed);
+            return new Ball(X, Y, radius, Mass, xSpeed, ySpeed,logger);
         }
     }
 }
