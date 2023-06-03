@@ -14,7 +14,7 @@ namespace Data
         private StreamWriter sw;
         static string projectDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         static string dataDirectory = Path.GetFullPath(Path.Combine(projectDirectory, "..", "..", "..", "..", "Data"));
-        string logFilePath = Path.Combine(dataDirectory, "log.txt");
+        string logFilePath = Path.Combine(dataDirectory, "log.xml");
 
         public Logger()
         {
@@ -29,8 +29,14 @@ namespace Data
             }
         }
 
-        public void LogBallPosition(BallApi ball)
+        public void SubscribeToBall(BallApi ball)
         {
+            ball.ChangedPosition += LogBallPosition;
+        }
+
+        private void LogBallPosition(Object s, DataEventArgs e)
+        {
+            BallApi ball = (BallApi)s;
             string time = DateTime.Now.ToString("h:mm:ss tt");
             string log = $"{time} Ball moved to position ({ball.Position.X}, {ball.Position.Y}) with speed ({ball.Speed.X}, {ball.Speed.Y})";
             buffer.Add(log);
@@ -45,6 +51,10 @@ namespace Data
                 {
                     sw.WriteLine(log);
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
             }
             finally
             {

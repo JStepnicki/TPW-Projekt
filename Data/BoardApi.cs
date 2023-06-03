@@ -20,7 +20,7 @@ namespace Data
 
         public void LogBallData(BallApi ball)
         {
-            logger.LogBallPosition(ball);
+            logger.SubscribeToBall(ball);
         }
 
     }

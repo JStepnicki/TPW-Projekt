@@ -57,6 +57,7 @@ namespace Logic
                 dataBall.ChangedPosition += CheckBallsCollision;
 
                 Balls.Add(ball);
+                dataAPI.LogBallData(dataBall);
             }
         }
 
