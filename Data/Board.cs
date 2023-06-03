@@ -17,6 +17,7 @@ namespace Data
         {
             Width = width;
             Height = height;
+            _logger.addBoardData(this);
         }
 
         public override BallApi AddBall(int id,float X, float Y, int radius, float Mass, float xSpeed = 0, float ySpeed = 0)

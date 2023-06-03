@@ -46,6 +46,21 @@ namespace Data
             ClearLogFile();
         }
 
+        public override void addBoardData(BoardApi board)
+        {
+            JObject logObject = JObject.FromObject(board);
+            _logArray.Add(logObject);
+            String data = JsonConvert.SerializeObject(_logArray, Newtonsoft.Json.Formatting.Indented);
+            _writeMutex.WaitOne();
+            try
+            {
+                File.WriteAllText(_filePath, data);
+            }
+            finally
+            {
+                _writeMutex.ReleaseMutex();
+            }
+        }
         public override void addBallToQueue(BallApi ball)
         {
             _enterQueueMutex.WaitOne();
