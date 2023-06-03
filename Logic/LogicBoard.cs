@@ -1,8 +1,11 @@
 ﻿using Data;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using System.Threading;
 using System.Numerics;
+using System.Xml.Linq;
 
 namespace Logic
 {
@@ -17,6 +20,8 @@ namespace Logic
         public List<LogicBallApi> Balls { get; set; }
 
         public BoardApi dataAPI;
+
+
 
         public LogicBoard(BoardApi api)
         {
@@ -57,7 +62,6 @@ namespace Logic
                 dataBall.ChangedPosition += CheckBallsCollision;
 
                 Balls.Add(ball);
-                dataAPI.LogBallData(dataBall);
             }
         }
 

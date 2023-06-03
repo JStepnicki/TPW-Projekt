@@ -90,6 +90,10 @@ namespace LogicApiTest
                 }
             }
 
+            public override object getCommonLock()
+            {
+                return FakeDataBall.lockObject;
+            }
         }
 
 

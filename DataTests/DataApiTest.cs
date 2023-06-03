@@ -39,7 +39,7 @@ namespace DataTests
                 float prevX = ball.Position.X;
                 float prevY = ball.Position.Y;
 
-                Thread.Sleep(30);
+                Thread.Sleep(20);
 
                 Assert.AreNotEqual(prevX, ball.Position.X);
                 Assert.AreNotEqual(prevY, ball.Position.Y);
