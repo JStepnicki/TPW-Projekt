@@ -21,14 +21,14 @@ namespace Data
         public override int Radius { get; set; }
         public override bool CollisionCheck { get; set; }
         Stopwatch stopwatch;
-        private BallLoggerApi _logger;
+        private DataLoggerApi _logger;
 
         public override int ID { get; }
 
 
 
 
-        internal Ball(int id,float X, float Y, int radius, float mass, float xSpeed, float ySpeed, BallLoggerApi logger)
+        internal Ball(int id,float X, float Y, int radius, float mass, float xSpeed, float ySpeed, DataLoggerApi logger)
         {
             ID = id;
             _position = new Vector2(X, Y);

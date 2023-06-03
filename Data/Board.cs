@@ -12,7 +12,7 @@ namespace Data
         public override int Height { get; set; }
 
         private List<BallApi> Balls = new List<BallApi>();
-        private BallLoggerApi _logger = BallLoggerApi.CreateBallLoger();
+        private DataLoggerApi _logger = DataLoggerApi.CreateBallLoger();
         public Board(int width, int height)
         {
             Width = width;

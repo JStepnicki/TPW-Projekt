@@ -9,16 +9,16 @@ using System.Reflection;
 
 namespace Data
 {
-    internal class BallLogger : BallLoggerApi
+    internal class DataLogger : DataLoggerApi
     {
         private string _filePath;
         private Task _logerTask;
         private ConcurrentQueue<JObject> _ballsQueue;
         private JArray _logArray;
         private Mutex _writeMutex = new Mutex();
-        private Mutex _enterQueueMutex = new Mutex();
+        private Mutex _QueueMutex = new Mutex();
 
-        public BallLogger()
+        public DataLogger()
         {
             string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
             _filePath = Path.Combine(path, "DataBallsLog.json");
@@ -41,13 +41,12 @@ namespace Data
                 _logArray = new JArray();
                 FileStream file = File.Create(_filePath);
                 file.Close();
-
             }
-            ClearLogFile();
         }
 
         public override void addBoardData(BoardApi board)
         {
+            ClearLogFile();
             JObject logObject = JObject.FromObject(board);
             _logArray.Add(logObject);
             String data = JsonConvert.SerializeObject(_logArray, Newtonsoft.Json.Formatting.Indented);
@@ -63,7 +62,7 @@ namespace Data
         }
         public override void addBallToQueue(BallApi ball)
         {
-            _enterQueueMutex.WaitOne();
+            _QueueMutex.WaitOne();
             try
             {
                 JObject logObject = JObject.FromObject(ball);
@@ -77,7 +76,7 @@ namespace Data
             }
             finally
             {
-                _enterQueueMutex.ReleaseMutex();
+                _QueueMutex.ReleaseMutex();
             }
         }
 
@@ -113,7 +112,7 @@ namespace Data
             }
         }
 
-        ~BallLogger()
+        ~DataLogger()//destruktor
         {
             _writeMutex.WaitOne();
             _writeMutex.ReleaseMutex();
