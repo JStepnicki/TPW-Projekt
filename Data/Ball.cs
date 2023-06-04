@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Data
@@ -18,9 +21,16 @@ namespace Data
         public override int Radius { get; set; }
         public override bool CollisionCheck { get; set; }
         Stopwatch stopwatch;
+        private DataLoggerApi _logger;
 
-        internal Ball(float X, float Y, int radius, float mass, float xSpeed, float ySpeed)
+        public override int ID { get; }
+
+
+
+
+        internal Ball(int id,float X, float Y, int radius, float mass, float xSpeed, float ySpeed, DataLoggerApi logger)
         {
+            ID = id;
             _position = new Vector2(X, Y);
             _speed = new Vector2(xSpeed, ySpeed);
             Mass = mass;
@@ -29,7 +39,7 @@ namespace Data
             CollisionCheck = false;
             isRunning = true;
             stopwatch = new Stopwatch();
-
+            this._logger = logger;
         }
 
         private async void StartMovement()
@@ -40,6 +50,7 @@ namespace Data
                 stopwatch.Restart();
                 stopwatch.Start();
                 Move(time);
+                _logger.addBallToQueue(this);
                 Vector2 tempSpeed = Speed;
                 int sleepTime = (int)(1 / Math.Abs(tempSpeed.X) + Math.Abs(tempSpeed.Y));
                 if(sleepTime < 10)
@@ -51,6 +62,7 @@ namespace Data
             }
         }
 
+
         private  void Move(float time)
         {
             Vector2 tempPos = _position;
@@ -61,10 +73,14 @@ namespace Data
             ChangedPosition?.Invoke(this, args);
         }
 
+
+
         public override Vector2 Position
         {
             get => _position;
         }
+
+
 
         public override Vector2 Speed
         {
@@ -78,6 +94,7 @@ namespace Data
                 }
             }
         }
+
 
     }
 

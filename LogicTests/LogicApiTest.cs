@@ -1,8 +1,7 @@
 ﻿using Data;
 using Logic;
+using System.Diagnostics;
 using System.Numerics;
-using System.Reflection.Emit;
-using System.Xml.Schema;
 
 namespace LogicApiTest
 {
@@ -20,13 +19,15 @@ namespace LogicApiTest
             public override float Mass { get; set; }
             public override int Radius { get; set; }
             public override bool CollisionCheck { get; set; }
+            Stopwatch stopwatch;
+            private DataLoggerApi _logger;
 
-            private static object lockObject = new object();
+            public override int ID { get; }
 
 
-
-            internal FakeDataBall(float X, float Y, int radius, float mass, float xSpeed, float ySpeed)
+            internal FakeDataBall(int id, float X, float Y, int radius, float mass, float xSpeed, float ySpeed, DataLoggerApi logger)
             {
+                ID = id;
                 _position = new Vector2(X, Y);
                 _speed = new Vector2(xSpeed, ySpeed);
                 Mass = mass;
@@ -34,38 +35,39 @@ namespace LogicApiTest
                 Task.Run(StartMovement);
                 CollisionCheck = false;
                 isRunning = true;
-
+                stopwatch = new Stopwatch();
+                this._logger = logger;
             }
 
             private async void StartMovement()
             {
                 while (this.isRunning)
                 {
-                    Move();
-                    CollisionCheck = false;
-                    await Task.Delay(10);
+                    float time = stopwatch.ElapsedMilliseconds / 10;
+                    stopwatch.Restart();
+                    stopwatch.Start();
+                    Move(time);
+                    _logger.addBallToQueue(this);
+                    Vector2 tempSpeed = Speed;
+                    int sleepTime = (int)(1 / Math.Abs(tempSpeed.X) + Math.Abs(tempSpeed.Y));
+                    if (sleepTime < 10)
+                    {
+                        sleepTime = 10;
+                    }
+                    await Task.Delay(sleepTime);
+                    stopwatch.Stop();
                 }
             }
 
 
-            private void Move()
+            private void Move(float time)
             {
-                Monitor.Enter(lockObject);
-                try
-                {
-                    _position += _speed;
-                    DataEventArgs args = new DataEventArgs(this);
-                    ChangedPosition?.Invoke(this, args);
-                }
-                catch (SynchronizationLockException exception)
-                {
-                    throw new Exception("Synchronization lock not working", exception);
-                }
-                finally
-                {
-                    Monitor.Exit(lockObject);
-                }
-
+                Vector2 tempPos = _position;
+                Vector2 tempSpeed = Speed;
+                tempPos = new Vector2(tempPos.X + tempSpeed.X * time, tempPos.Y + tempSpeed.Y * time);
+                _position = tempPos;
+                DataEventArgs args = new DataEventArgs(this);
+                ChangedPosition?.Invoke(this, args);
             }
 
 
@@ -90,6 +92,7 @@ namespace LogicApiTest
                 }
             }
 
+
         }
 
 
@@ -100,16 +103,17 @@ namespace LogicApiTest
             public override int Height { get; set; }
 
             private List<BallApi> Balls = new List<BallApi>();
-
+            private DataLoggerApi _logger = DataLoggerApi.CreateBallLoger();
             public FakeDataAPI(int width, int height)
             {
                 Width = width;
                 Height = height;
+                _logger.addBoardData(this);
             }
 
-            public override BallApi AddBall(float X, float Y, int radius, float Mass, float xSpeed = 0, float ySpeed = 0)
+            public override BallApi AddBall(int id, float X, float Y, int radius, float Mass, float xSpeed = 0, float ySpeed = 0)
             {
-                BallApi ball = BallApi.CreateBall(X, Y, radius, Mass, xSpeed, ySpeed);
+                BallApi ball = FakeDataBall.CreateBall(id, X, Y, radius, Mass, xSpeed, ySpeed, _logger);
                 Balls.Add(ball);
                 return ball;
             }
@@ -124,43 +128,37 @@ namespace LogicApiTest
                 Balls.Clear();
             }
 
-
-
-        }
-
-
-
-        [TestMethod]
-        public void ConstructorTest()
-        {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            Assert.IsNotNull(board);
         }
 
         [TestMethod]
-        public void AddingBallsTest()
+        public void LogicTest()
         {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            board.AddBalls(3, 5);
-            Assert.AreEqual(board.GetAllBalls().Count, 3);
-        }
-        [TestMethod]
-        public void ClearingBoardTest()
-        {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            board.AddBalls(3, 5);
-            Assert.AreEqual(board.GetAllBalls().Count, 3);
+            LogicBoardApi board1 = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
+            Assert.IsNotNull(board1);
+            board1.AddBalls(3, 5);
+            Assert.AreEqual(board1.GetAllBalls().Count, 3);
+            board1.AddBalls(3, 5);
+            Assert.AreEqual(board1.GetAllBalls().Count, 6);
+            board1.ClearBoard();
+            Assert.AreEqual(board1.GetAllBalls().Count, 0);
+            board1.ClearBoard();
+            Assert.AreEqual(board1.GetAllBalls().Count, 0);
 
-            board.ClearBoard();
-            Assert.AreEqual(board.GetAllBalls().Count, 0);
+            Assert.IsNotNull(board1);
+
+
+            board1.AddBalls(3, 5);
+            Assert.AreEqual(3, board1.GetAllBalls().Count);
+
+            var balls = board1.GetAllBalls();
+            foreach (var ball in balls)
+            {
+
+                Assert.IsTrue(ball.Position.X >= 0 && ball.Position.X <= 500);
+                Assert.IsTrue(ball.Position.Y >= 0 && ball.Position.Y <= 500);
+            }
         }
-        [TestMethod]
-        public void ClearingEmptyBoardTest()
-        {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            board.ClearBoard();
-            Assert.AreEqual(board.GetAllBalls().Count, 0);
-        }
+ 
     }
 
 

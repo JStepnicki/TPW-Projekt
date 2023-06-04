@@ -1,8 +1,11 @@
 ﻿using Data;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using System.Threading;
 using System.Numerics;
+using System.Xml.Linq;
 
 namespace Logic
 {
@@ -16,9 +19,11 @@ namespace Logic
         private static object lockObject = new object();
         public List<LogicBallApi> Balls { get; set; }
 
-        public BoardApi dataAPI;
+        internal BoardApi dataAPI;
 
-        public LogicBoard(BoardApi api)
+
+
+        internal LogicBoard(BoardApi api)
         {
             this.SizeX = api.Height;
             this.SizeY = api.Width;
@@ -48,7 +53,7 @@ namespace Logic
                     SpeedY = random.Next(-3, 3);
                 } while (SpeedY == 0);
 
-                BallApi dataBall = dataAPI.AddBall(x, y, _BallRadius, weight, SpeedX, SpeedY);
+                BallApi dataBall = dataAPI.AddBall(i,x, y, _BallRadius, weight, SpeedX, SpeedY);
                 LogicBall ball = new LogicBall(dataBall.Position.X, dataBall.Position.Y);
 
 
@@ -57,7 +62,6 @@ namespace Logic
                 dataBall.ChangedPosition += CheckBallsCollision;
 
                 Balls.Add(ball);
-                dataAPI.LogBallData(dataBall);
             }
         }
 
