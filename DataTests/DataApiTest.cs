@@ -13,7 +13,7 @@ namespace DataTests
             public void dataAPIBallPOsitionTest()
             {
                 BoardApi dataAPI = BoardApi.CreateApi(600,400);
-                dataAPI.AddBall(10,10,12,10);
+                dataAPI.AddBall(1,10,10,12,10);
                 Assert.IsTrue(dataAPI.GetAllBalls().First().Position.X == 10);
                 Assert.IsTrue(dataAPI.GetAllBalls().First().Position.Y == 10);
             }
@@ -22,7 +22,7 @@ namespace DataTests
             public void DataAPIBallMovementTest()
             {
                 BoardApi dataAPI = BoardApi.CreateApi(600, 400);
-                dataAPI.AddBall(10, 10, 12, 10,1,1);
+                dataAPI.AddBall(1,10, 10, 12, 10,1,1);
                 Assert.IsTrue(dataAPI.GetAllBalls().First().Speed.Y == 1);
                 Assert.IsTrue(dataAPI.GetAllBalls().First().Speed.X == 1);
             }
@@ -31,7 +31,7 @@ namespace DataTests
             public void dataAPIBallsMovingTest()
             {
                 BoardApi dataAPI = BoardApi.CreateApi(600, 400);
-                dataAPI.AddBall(10, 10, 12, 10,12,12);
+                dataAPI.AddBall(1, 10, 10, 12, 10,12,12);
                 BallApi ball = dataAPI.GetAllBalls().First();
                 Assert.IsTrue(ball.Speed.X == 12);
                 Assert.IsTrue(ball.Speed.Y == 12);
