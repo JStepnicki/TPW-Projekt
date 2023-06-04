@@ -2,8 +2,6 @@
 using Logic;
 using System.Diagnostics;
 using System.Numerics;
-using System.Reflection.Emit;
-using System.Xml.Schema;
 
 namespace LogicApiTest
 {
@@ -117,7 +115,7 @@ namespace LogicApiTest
 
             public override BallApi AddBall(int id, float X, float Y, int radius, float Mass, float xSpeed = 0, float ySpeed = 0)
             {
-                BallApi ball = BallApi.CreateBall(id, X, Y, radius, Mass, xSpeed, ySpeed, _logger);
+                BallApi ball = FakeDataBall.CreateBall(id, X, Y, radius, Mass, xSpeed, ySpeed, _logger);
                 Balls.Add(ball);
                 return ball;
             }
@@ -149,7 +147,22 @@ namespace LogicApiTest
             Assert.AreEqual(board1.GetAllBalls().Count, 0);
             board1.ClearBoard();
             Assert.AreEqual(board1.GetAllBalls().Count, 0);
+
+            Assert.IsNotNull(board1);
+
+
+            board1.AddBalls(3, 5);
+            Assert.AreEqual(3, board1.GetAllBalls().Count);
+
+            var balls = board1.GetAllBalls();
+            foreach (var ball in balls)
+            {
+
+                Assert.IsTrue(ball.Position.X >= 0 && ball.Position.X <= 500);
+                Assert.IsTrue(ball.Position.Y >= 0 && ball.Position.Y <= 500);
+            }
         }
+ 
     }
 
 
