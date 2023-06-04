@@ -19,11 +19,11 @@ namespace Logic
         private static object lockObject = new object();
         public List<LogicBallApi> Balls { get; set; }
 
-        public BoardApi dataAPI;
+        internal BoardApi dataAPI;
 
 
 
-        public LogicBoard(BoardApi api)
+        internal LogicBoard(BoardApi api)
         {
             this.SizeX = api.Height;
             this.SizeY = api.Width;

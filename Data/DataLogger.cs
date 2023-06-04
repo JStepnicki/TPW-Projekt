@@ -18,7 +18,7 @@ namespace Data
         private Mutex _writeMutex = new Mutex();
         private Mutex _QueueMutex = new Mutex();
 
-        public DataLogger()
+        internal DataLogger()
         {
             string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
             _filePath = Path.Combine(path, "DataBallsLog.json");
@@ -65,8 +65,9 @@ namespace Data
             _QueueMutex.WaitOne();
             try
             {
-                JObject logObject = JObject.FromObject(ball);
+                JObject logObject = JObject.FromObject(ball.Position);
                 logObject["Time:"] = DateTime.Now.ToString("HH:mm:ss");
+                logObject.Add("ID", ball.ID);
 
                 _ballsQueue.Enqueue(logObject);
                 if (_logerTask == null || _logerTask.IsCompleted)
@@ -80,7 +81,7 @@ namespace Data
             }
         }
 
-        public void writeDataToLogFile()
+        private void writeDataToLogFile()
         {
             while (_ballsQueue.TryDequeue(out JObject ball))
             {
@@ -98,7 +99,7 @@ namespace Data
             }
         }
 
-        internal void ClearLogFile()
+        private void ClearLogFile()
         {
             _writeMutex.WaitOne();
             try

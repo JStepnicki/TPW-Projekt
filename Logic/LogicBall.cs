@@ -20,7 +20,7 @@ namespace Logic
 
 
 
-        public void UpdateBall(Object s, DataEventArgs e)
+        internal void UpdateBall(Object s, DataEventArgs e)
         {
             BallApi ball = (BallApi)s;
             Position = ball.Position;

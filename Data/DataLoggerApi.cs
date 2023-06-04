@@ -1,15 +1,15 @@
 ﻿
 namespace Data
 {
-    public abstract class BallLoggerApi
+    public abstract class DataLoggerApi
     {
         public abstract void addBallToQueue(BallApi ball);
 
         public abstract void addBoardData(BoardApi board);
 
-        public static BallLoggerApi CreateBallLoger()
+        public static DataLoggerApi CreateBallLoger()
         {
-            return new BallLogger();
+            return new DataLogger();
         }
     }
 }
