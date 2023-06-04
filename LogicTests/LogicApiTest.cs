@@ -25,8 +25,6 @@ namespace LogicApiTest
             public override int ID { get; }
 
 
-
-
             internal FakeDataBall(int id, float X, float Y, int radius, float mass, float xSpeed, float ySpeed, DataLoggerApi logger)
             {
                 ID = id;
@@ -132,10 +130,8 @@ namespace LogicApiTest
 
         }
 
-
-
         [TestMethod]
-        public void ConstructorTest()
+        public void LogicTest()
         {
             LogicBoardApi board1 = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
             Assert.IsNotNull(board1);
