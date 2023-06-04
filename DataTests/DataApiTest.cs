@@ -24,11 +24,16 @@ namespace DataTests
                 Assert.IsTrue(dataAPI.GetAllBalls().First().Mass==7);
                 Assert.IsTrue(dataAPI.GetAllBalls().First().Speed.Y == 1);
                 Assert.IsTrue(dataAPI.GetAllBalls().First().Speed.X == 1);
+
+                Assert.IsTrue(dataAPI.GetAllBalls().First().isRunning);
+
                 for (int i = 0; i < 10; i++)
                 {
                     dataAPI.AddBall(i, 10, 12, 10, 1, 1);
                 }
-                Assert.IsTrue(11 == dataAPI.GetAllBalls().Count);
+                Assert.AreEqual(dataAPI.GetAllBalls().Count, 11);
+
+                Assert.IsTrue(dataAPI.GetAllBalls().All(b => b.isRunning));
             }
 
         }
