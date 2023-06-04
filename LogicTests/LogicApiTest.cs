@@ -139,33 +139,16 @@ namespace LogicApiTest
         [TestMethod]
         public void ConstructorTest()
         {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            Assert.IsNotNull(board);
-        }
-
-        [TestMethod]
-        public void AddingBallsTest()
-        {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            board.AddBalls(3, 5);
-            Assert.AreEqual(board.GetAllBalls().Count, 3);
-        }
-        [TestMethod]
-        public void ClearingBoardTest()
-        {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            board.AddBalls(3, 5);
-            Assert.AreEqual(board.GetAllBalls().Count, 3);
-
-            board.ClearBoard();
-            Assert.AreEqual(board.GetAllBalls().Count, 0);
-        }
-        [TestMethod]
-        public void ClearingEmptyBoardTest()
-        {
-            LogicBoardApi board = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
-            board.ClearBoard();
-            Assert.AreEqual(board.GetAllBalls().Count, 0);
+            LogicBoardApi board1 = LogicBoardApi.CreateAPI(new FakeDataAPI(500, 500));
+            Assert.IsNotNull(board1);
+            board1.AddBalls(3, 5);
+            Assert.AreEqual(board1.GetAllBalls().Count, 3);
+            board1.AddBalls(3, 5);
+            Assert.AreEqual(board1.GetAllBalls().Count, 6);
+            board1.ClearBoard();
+            Assert.AreEqual(board1.GetAllBalls().Count, 0);
+            board1.ClearBoard();
+            Assert.AreEqual(board1.GetAllBalls().Count, 0);
         }
     }
 
