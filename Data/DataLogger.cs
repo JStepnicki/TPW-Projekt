@@ -10,7 +10,7 @@ using Catel.Runtime.Serialization;
 
 namespace Data
 {
-    internal class DataLogger : DataLoggerApi
+    internal class DataLogger : DataLoggerApi,IDisposable
     {
         private string _filePath;
         private ConcurrentQueue<BallApi> _ballsQueue;
