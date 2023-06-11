@@ -8,14 +8,14 @@ using Newtonsoft.Json;
 
 namespace Data
 {
-    internal class DataLogger : DataLoggerApi
+    internal class DataLogger : DataLoggerApi, IDisposable
     {
         private string _filePath;
-        private Task _logerTask;
+        private Task _loggerTask;
         private ConcurrentQueue<JObject> _ballsQueue;
         private JArray _logArray;
         private Mutex _writeMutex = new Mutex();
-        private Mutex _QueueMutex = new Mutex();
+        private bool _disposed = false;
 
         internal DataLogger()
         {
@@ -41,6 +41,8 @@ namespace Data
                 FileStream file = File.Create(_filePath);
                 file.Close();
             }
+
+            _loggerTask = Task.Run(writeDataToLogFile);
         }
 
         public override void addBoardData(BoardApi board)
@@ -61,40 +63,32 @@ namespace Data
         }
         public override void addBallToQueue(BallApi ball)
         {
-            _QueueMutex.WaitOne();
-            try
-            {
-                JObject logObject = JObject.FromObject(ball.Position);
-                logObject["Time:"] = DateTime.Now.ToString("HH:mm:ss");
-                logObject.Add("ID", ball.ID);
+            JObject logObject = JObject.FromObject(ball.Position);
+            logObject["Time:"] = DateTime.Now.ToString("HH:mm:ss");
+            logObject.Add("ID", ball.ID);
 
-                _ballsQueue.Enqueue(logObject);
-                if (_logerTask == null || _logerTask.IsCompleted)
-                {
-                    _logerTask = Task.Run(writeDataToLogFile);
-                }
-            }
-            finally
-            {
-                _QueueMutex.ReleaseMutex();
-            }
+            _ballsQueue.Enqueue(logObject);
         }
 
-        private void writeDataToLogFile()
+        private async Task writeDataToLogFile()
         {
-            while (_ballsQueue.TryDequeue(out JObject ball))
+            while (!_disposed)
             {
-                _logArray.Add(ball);
-            }
-            String data = JsonConvert.SerializeObject(_logArray, Newtonsoft.Json.Formatting.Indented);
-            _writeMutex.WaitOne();
-            try
-            {
-                File.WriteAllText(_filePath, data);
-            }
-            finally
-            {
-                _writeMutex.ReleaseMutex();
+                while (_ballsQueue.TryDequeue(out JObject ball))
+                {
+                    _logArray.Add(ball);
+                }
+                String data = JsonConvert.SerializeObject(_logArray, Newtonsoft.Json.Formatting.Indented);
+                _writeMutex.WaitOne();
+                try
+                {
+                    File.WriteAllText(_filePath, data);
+                }
+                finally
+                {
+                    _writeMutex.ReleaseMutex();
+                }
+                await Task.Delay(10);
             }
         }
 
@@ -112,10 +106,27 @@ namespace Data
             }
         }
 
-        ~DataLogger()//destruktor
+        public void Dispose()
         {
-            _writeMutex.WaitOne();
-            _writeMutex.ReleaseMutex();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _writeMutex.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
+        ~DataLogger()
+        {
+            Dispose(false);
         }
     }
 }
