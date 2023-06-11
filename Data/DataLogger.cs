@@ -1,121 +1,91 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Threading.Tasks;
 using System.Threading;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Text;
+using Catel.Runtime.Serialization;
 
 namespace Data
 {
     internal class DataLogger : DataLoggerApi
     {
         private string _filePath;
-        private Task _logerTask;
-        private ConcurrentQueue<JObject> _ballsQueue;
-        private JArray _logArray;
-        private Mutex _writeMutex = new Mutex();
-        private Mutex _QueueMutex = new Mutex();
+        private ConcurrentQueue<BallApi> _ballsQueue;
+        private JArray _logArray = new JArray();
+        private  int QueueSize = 50;
+        private CancellationTokenSource StateChange = new CancellationTokenSource();
+        private bool StopTask;
 
         internal DataLogger()
         {
             string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;
             _filePath = Path.Combine(path, "DataBallsLog.json");
-            _ballsQueue = new ConcurrentQueue<JObject>();
+            _ballsQueue = new ConcurrentQueue<BallApi>();
 
-            if (File.Exists(_filePath))
+            using (FileStream LogFile = File.Create(_filePath))
             {
-                try
-                {
-                    string input = File.ReadAllText(_filePath);
-                    _logArray = JArray.Parse(input);
-                }
-                catch (JsonReaderException)
-                {
-                    _logArray = new JArray();
-                }
+                LogFile.Close();
             }
-            else
-            {
-                _logArray = new JArray();
-                FileStream file = File.Create(_filePath);
-                file.Close();
-            }
+
+            this.StopTask = false;
+            Task.Run(writeDataToLogFile);
         }
 
-        public override void addBoardData(BoardApi board)
-        {
-            ClearLogFile();
-            JObject logObject = JObject.FromObject(board);
-            _logArray.Add(logObject);
-            String data = JsonConvert.SerializeObject(_logArray, Newtonsoft.Json.Formatting.Indented);
-            _writeMutex.WaitOne();
-            try
-            {
-                File.WriteAllText(_filePath, data);
-            }
-            finally
-            {
-                _writeMutex.ReleaseMutex();
-            }
-        }
+
         public override void addBallToQueue(BallApi ball)
         {
-            _QueueMutex.WaitOne();
-            try
+            if (_ballsQueue.Count < this.QueueSize)
             {
-                JObject logObject = JObject.FromObject(ball.Position);
-                logObject["Time:"] = DateTime.Now.ToString("HH:mm:ss");
-                logObject.Add("ID", ball.ID);
+                _ballsQueue.Enqueue(ball);
+                StateChange.Cancel();
+            }
+        }
 
-                _ballsQueue.Enqueue(logObject);
-                if (_logerTask == null || _logerTask.IsCompleted)
+
+        private async void writeDataToLogFile()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            while (!this.StopTask)
+            {
+                if (!_ballsQueue.IsEmpty)
                 {
-                    _logerTask = Task.Run(writeDataToLogFile);
+                    while (_ballsQueue.TryDequeue(out BallApi serilizedObject))
+                    {
+                        JObject jsonObject = JObject.FromObject(serilizedObject);
+                        jsonObject["Time"] = DateTime.Now.ToString("HH:mm:ss");
+                        _logArray.Add(jsonObject);
+                    }
+
+                    stringBuilder.Append(JsonConvert.SerializeObject(_logArray, Formatting.Indented));
+                    _logArray.Clear();
+                    await File.AppendAllTextAsync(_filePath, stringBuilder.ToString());
+                    stringBuilder.Clear();
+                }
+                await Task.Delay(Timeout.Infinite, StateChange.Token).ContinueWith(_ => { });
+
+                if (this.StateChange.IsCancellationRequested)
+                {
+                    this.StateChange = new CancellationTokenSource();
                 }
             }
-            finally
-            {
-                _QueueMutex.ReleaseMutex();
-            }
+        }
+        public override void saveBoardData(BoardApi board)
+        {
+            JObject logObject = JObject.FromObject(board);
+            String data = JsonConvert.SerializeObject(logObject, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(_filePath, data);
+        }
+        public override void Dispose()
+        {
+            this.StopTask = true;
         }
 
-        private void writeDataToLogFile()
+        ~DataLogger()
         {
-            while (_ballsQueue.TryDequeue(out JObject ball))
-            {
-                _logArray.Add(ball);
-            }
-            String data = JsonConvert.SerializeObject(_logArray, Newtonsoft.Json.Formatting.Indented);
-            _writeMutex.WaitOne();
-            try
-            {
-                File.WriteAllText(_filePath, data);
-            }
-            finally
-            {
-                _writeMutex.ReleaseMutex();
-            }
-        }
-
-        private void ClearLogFile()
-        {
-            _writeMutex.WaitOne();
-            try
-            {
-                _logArray.Clear();
-                File.WriteAllText(_filePath, string.Empty);
-            }
-            finally
-            {
-                _writeMutex.ReleaseMutex();
-            }
-        }
-
-        ~DataLogger()//destruktor
-        {
-            _writeMutex.WaitOne();
-            _writeMutex.ReleaseMutex();
+            this.Dispose();
         }
     }
 }
