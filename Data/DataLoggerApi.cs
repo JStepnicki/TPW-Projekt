@@ -1,9 +1,10 @@
 ﻿
 using Catel.Runtime.Serialization;
+using System;
 
 namespace Data
 {
-    public abstract class DataLoggerApi
+    public abstract class DataLoggerApi : IDisposable
     {
         public abstract void addBallToQueue(BallApi ball);
         public abstract void saveBoardData(BoardApi board);
